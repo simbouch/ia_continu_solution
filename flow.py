@@ -9,7 +9,7 @@ from datetime import datetime
 # PYTHONIOENCODING: évite les UnicodeDecodeError sous Windows
 # PREFECT_API_URL: indique au SDK où se trouve l'API Prefect
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
-os.environ.setdefault("PREFECT_API_URL", "http://127.0.0.1:4200/api")
+#os.environ.setdefault("PREFECT_API_URL", "http://127.0.0.1:4200/api")
 
 def send_discord_embed(message):
     """Envoyer un message à un canal Discord via un Webhook."""
