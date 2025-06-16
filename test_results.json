@@ -1,0 +1,79 @@
+[
+  {
+    "test": "Root Endpoint (/)",
+    "success": true,
+    "details": "Status: 200",
+    "response_time": 0.014510154724121094,
+    "timestamp": "2025-06-16T11:42:36.271099"
+  },
+  {
+    "test": "Health Check (/health)",
+    "success": true,
+    "details": "Status: 200",
+    "response_time": 0.007795810699462891,
+    "timestamp": "2025-06-16T11:42:36.281398"
+  },
+  {
+    "test": "Status Endpoint (/status)",
+    "success": true,
+    "details": "Status: 200",
+    "response_time": 0.01761913299560547,
+    "timestamp": "2025-06-16T11:42:36.300014"
+  },
+  {
+    "test": "Notification Endpoint (/notify)",
+    "success": true,
+    "details": "Status: 200",
+    "response_time": 0.49999022483825684,
+    "timestamp": "2025-06-16T11:42:36.800559"
+  },
+  {
+    "test": "Container Status",
+    "success": true,
+    "details": "Container is running",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:37.031315"
+  },
+  {
+    "test": "Container Health",
+    "success": true,
+    "details": "Health: healthy",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:37.179330"
+  },
+  {
+    "test": "Webhook Validation",
+    "success": true,
+    "details": "Webhook: Spidey Bot",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:37.929026"
+  },
+  {
+    "test": "Discord Simple Message",
+    "success": true,
+    "details": "Status: 204",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:38.978054"
+  },
+  {
+    "test": "Discord Embed Message",
+    "success": true,
+    "details": "Status: 204",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:39.780230"
+  },
+  {
+    "test": "API Health Monitoring",
+    "success": true,
+    "details": "Status: 200",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:39.806640"
+  },
+  {
+    "test": "Model Performance Simulation",
+    "success": true,
+    "details": "Accuracy: 0.936, Drift: 0.605, Healthy: True",
+    "response_time": 0,
+    "timestamp": "2025-06-16T11:42:39.808663"
+  }
+]

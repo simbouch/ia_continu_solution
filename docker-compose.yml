@@ -1,4 +1,5 @@
 version: '3.8'
+<<<<<<< Updated upstream
 services:
   app:
     build: .
@@ -6,13 +7,102 @@ services:
     ports:
       - 8000:8000
     restart: unless-stopped
+=======
+
+services:
+  # FastAPI Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    ports:
+      - "9000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health', timeout=10)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - monitoring-network
+
+  # Uptime Kuma Monitoring
+>>>>>>> Stashed changes
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     container_name: uptime_kuma
     ports:
+<<<<<<< Updated upstream
       - 3001:3001
     volumes:
       - uptime-kuma-data:/app/data
     restart: unless-stopped
 volumes:
   uptime-kuma-data:
+=======
+      - "3001:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
+    depends_on:
+      - app
+    networks:
+      - monitoring-network
+
+  # Prefect Server
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    command: prefect server start --host 0.0.0.0
+    container_name: prefect-server
+    ports:
+      - "4200:4200"
+    volumes:
+      - prefect_data:/root/.prefect
+    environment:
+      - PREFECT_SERVER_API_HOST=0.0.0.0
+      - PREFECT_API_URL=http://prefect-server:4200/api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - monitoring-network
+
+  # Prefect Flow Worker
+  prefect-worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prefect
+    container_name: prefect-worker
+    depends_on:
+      prefect-server:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    environment:
+      - PREFECT_API_URL=http://prefect-server:4200/api
+      - PYTHONIOENCODING=utf-8
+      - API_URL=http://fastapi_app:8000
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+volumes:
+  uptime-kuma-data:
+    driver: local
+  prefect_data:
+    driver: local
+
+networks:
+  monitoring-network:
+    driver: bridge
+>>>>>>> Stashed changes
