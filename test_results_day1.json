@@ -1,0 +1,322 @@
+[
+  {
+    "test": "Service app présent",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.503999"
+  },
+  {
+    "test": "Service uptime-kuma présent",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.503999"
+  },
+  {
+    "test": "Service prefect-server présent",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.503999"
+  },
+  {
+    "test": "Service prefect-worker présent",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.503999"
+  },
+  {
+    "test": "Port FastAPI configuré",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.504995"
+  },
+  {
+    "test": "Port Uptime Kuma configuré",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.504995"
+  },
+  {
+    "test": "Port Prefect configuré",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.504995"
+  },
+  {
+    "test": "Volume Uptime Kuma configuré",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.504995"
+  },
+  {
+    "test": "Import présent: from prefect import flow, task",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.505996"
+  },
+  {
+    "test": "Import présent: from prefect.logging import get_run_logger",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.507999"
+  },
+  {
+    "test": "Import présent: import random",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.509540"
+  },
+  {
+    "test": "Décorateur @task",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.509540"
+  },
+  {
+    "test": "Décorateur @flow",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.511078"
+  },
+  {
+    "test": "Fonction check_random",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.511078"
+  },
+  {
+    "test": "Fonction periodic_check",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.511078"
+  },
+  {
+    "test": "Configuration retries",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.511078"
+  },
+  {
+    "test": "Configuration retry_delay",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.511078"
+  },
+  {
+    "test": "Génération nombre aléatoire",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.512091"
+  },
+  {
+    "test": "Condition seuil 0.5",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.512091"
+  },
+  {
+    "test": "Configuration serve",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.512091"
+  },
+  {
+    "test": "Intervalle 30 secondes",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.512091"
+  },
+  {
+    "test": "Fonction send_discord_embed",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.514087"
+  },
+  {
+    "test": "Structure embeds",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.514087"
+  },
+  {
+    "test": "Titre pipeline",
+    "success": false,
+    "details": "Élément manquant: \"title\": \"Résultats du pipeline\"",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.514087"
+  },
+  {
+    "test": "Couleur verte",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.515085"
+  },
+  {
+    "test": "Champ Status",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.515085"
+  },
+  {
+    "test": "Valeur Succès",
+    "success": false,
+    "details": "Élément manquant: \"Succès\"",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.515085"
+  },
+  {
+    "test": "Requête POST",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.516089"
+  },
+  {
+    "test": "Vérification status 204",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.516089"
+  },
+  {
+    "test": "Image de base Python 3.11",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.517086"
+  },
+  {
+    "test": "Répertoire de travail",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.517086"
+  },
+  {
+    "test": "Encodage UTF-8",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.517086"
+  },
+  {
+    "test": "Copie du flow",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.518087"
+  },
+  {
+    "test": "Commande d'exécution",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:16.518087"
+  },
+  {
+    "test": "API accessible",
+    "success": false,
+    "details": "Erreur: HTTPConnectionPool(host='localhost', port=9000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001DEA104F5C0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée'))",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:20.615851"
+  },
+  {
+    "test": "Envoi notification Discord",
+    "success": true,
+    "details": "Message envoyé avec succès",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:22.425335"
+  },
+  {
+    "test": "Construction image FastAPI",
+    "success": false,
+    "details": null,
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:43:39.491387"
+  },
+  {
+    "test": "Construction image Prefect",
+    "success": false,
+    "details": "#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile.prefect\n#1 transferring dockerfile: 864B 0.0s done\n#1 DONE 0.1s\n\n#2 [internal] load metadata for docker.io/library/python:3.11-slim\n#2 ERROR: failed to do request: Head \"https://registry-1.docker.io/v2/library/python/manifests/3.11-slim\": dialing registry-1.docker.io:443 container via direct connection because  has no HTTPS proxy: connecting to 98.85.153.80:443: dial tcp 98.85.153.80:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.\n------\n > [internal] load metadata for docker.io/library/python:3.11-slim:\n------\nDockerfile.prefect:2\n--------------------\n   1 |     # Use Python 3.11 slim image\n   2 | >>> FROM python:3.11-slim\n   3 |     \n   4 |     # Set working directory\n--------------------\nERROR: failed to solve: python:3.11-slim: failed to do request: Head \"https://registry-1.docker.io/v2/library/python/manifests/3.11-slim\": dialing registry-1.docker.io:443 container via direct connection because  has no HTTPS proxy: connecting to 98.85.153.80:443: dial tcp 98.85.153.80:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.\n\nView build details: docker-desktop://dashboard/build/default/default/ly42oj28aayc0ygp5ivezmxqm\n",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:44:02.685785"
+  },
+  {
+    "test": "Variable DISCORD_WEBHOOK_URL dans .env",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:44:02.687413"
+  },
+  {
+    "test": "DISCORD_WEBHOOK_URL configuré",
+    "success": true,
+    "details": "",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T13:44:02.687413"
+  }
+]

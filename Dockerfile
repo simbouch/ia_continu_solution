@@ -1,19 +1,3 @@
-<<<<<<< Updated upstream
-FROM python:3.11
-
-WORKDIR /app
-
-COPY . /app
-
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-
-
-EXPOSE 8000
-
-# Run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
-=======
 # Use Python 3.11 slim image
 FROM python:3.11-slim
 
@@ -24,11 +8,6 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=utf-8
-
-# Install system dependencies (skip if network issues)
-# RUN apt-get update && apt-get install -y \
-#     gcc \
-#     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
@@ -52,4 +31,3 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 
 # Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
->>>>>>> Stashed changes

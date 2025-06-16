@@ -3,77 +3,56 @@
     "test": "Root Endpoint (/)",
     "success": true,
     "details": "Status: 200",
-    "response_time": 0.014510154724121094,
-    "timestamp": "2025-06-16T11:42:36.271099"
+    "response_time": 0.010789871215820312,
+    "timestamp": "2025-06-16T14:27:05.419693"
   },
   {
     "test": "Health Check (/health)",
     "success": true,
     "details": "Status: 200",
-    "response_time": 0.007795810699462891,
-    "timestamp": "2025-06-16T11:42:36.281398"
+    "response_time": 0.03081679344177246,
+    "timestamp": "2025-06-16T14:27:05.450510"
   },
   {
     "test": "Status Endpoint (/status)",
     "success": true,
     "details": "Status: 200",
-    "response_time": 0.01761913299560547,
-    "timestamp": "2025-06-16T11:42:36.300014"
+    "response_time": 0.029478073120117188,
+    "timestamp": "2025-06-16T14:27:05.479988"
   },
   {
     "test": "Notification Endpoint (/notify)",
-    "success": true,
-    "details": "Status: 200",
-    "response_time": 0.49999022483825684,
-    "timestamp": "2025-06-16T11:42:36.800559"
+    "success": false,
+    "details": "Status: N/A",
+    "response_time": 0,
+    "timestamp": "2025-06-16T14:27:15.495422"
   },
   {
     "test": "Container Status",
-    "success": true,
-    "details": "Container is running",
+    "success": false,
+    "details": "Container not running",
     "response_time": 0,
-    "timestamp": "2025-06-16T11:42:37.031315"
+    "timestamp": "2025-06-16T14:27:15.661429"
   },
   {
-    "test": "Container Health",
-    "success": true,
-    "details": "Health: healthy",
+    "test": "Discord Configuration",
+    "success": false,
+    "details": "DISCORD_WEBHOOK_URL not set",
     "response_time": 0,
-    "timestamp": "2025-06-16T11:42:37.179330"
-  },
-  {
-    "test": "Webhook Validation",
-    "success": true,
-    "details": "Webhook: Spidey Bot",
-    "response_time": 0,
-    "timestamp": "2025-06-16T11:42:37.929026"
-  },
-  {
-    "test": "Discord Simple Message",
-    "success": true,
-    "details": "Status: 204",
-    "response_time": 0,
-    "timestamp": "2025-06-16T11:42:38.978054"
-  },
-  {
-    "test": "Discord Embed Message",
-    "success": true,
-    "details": "Status: 204",
-    "response_time": 0,
-    "timestamp": "2025-06-16T11:42:39.780230"
+    "timestamp": "2025-06-16T14:27:15.662049"
   },
   {
     "test": "API Health Monitoring",
-    "success": true,
-    "details": "Status: 200",
+    "success": false,
+    "details": "Error: HTTPConnectionPool(host='localhost', port=9000): Read timed out. (read timeout=5)",
     "response_time": 0,
-    "timestamp": "2025-06-16T11:42:39.806640"
+    "timestamp": "2025-06-16T14:27:20.667086"
   },
   {
     "test": "Model Performance Simulation",
     "success": true,
-    "details": "Accuracy: 0.936, Drift: 0.605, Healthy: True",
+    "details": "Accuracy: 0.723, Drift: 0.066, Healthy: False",
     "response_time": 0,
-    "timestamp": "2025-06-16T11:42:39.808663"
+    "timestamp": "2025-06-16T14:27:20.667086"
   }
 ]

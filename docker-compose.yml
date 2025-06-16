@@ -1,20 +1,9 @@
 version: '3.8'
-<<<<<<< Updated upstream
-services:
-  app:
-    build: .
-    container_name: fastapi_app
-    ports:
-      - 8000:8000
-    restart: unless-stopped
-=======
 
 services:
   # FastAPI Application
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: fastapi_app
     ports:
       - "9000:8000"
@@ -32,19 +21,10 @@ services:
       - monitoring-network
 
   # Uptime Kuma Monitoring
->>>>>>> Stashed changes
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     container_name: uptime_kuma
     ports:
-<<<<<<< Updated upstream
-      - 3001:3001
-    volumes:
-      - uptime-kuma-data:/app/data
-    restart: unless-stopped
-volumes:
-  uptime-kuma-data:
-=======
       - "3001:3001"
     volumes:
       - uptime-kuma-data:/app/data
@@ -78,7 +58,7 @@ volumes:
 
   # Prefect Flow Worker
   prefect-worker:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.prefect
     container_name: prefect-worker
@@ -105,4 +85,3 @@ volumes:
 networks:
   monitoring-network:
     driver: bridge
->>>>>>> Stashed changes
