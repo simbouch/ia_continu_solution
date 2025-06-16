@@ -5,7 +5,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.503999"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Service uptime-kuma présent",
@@ -13,7 +13,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.503999"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Service prefect-server présent",
@@ -21,7 +21,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.503999"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Service prefect-worker présent",
@@ -29,7 +29,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.503999"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Port FastAPI configuré",
@@ -37,7 +37,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.504995"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Port Uptime Kuma configuré",
@@ -45,7 +45,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.504995"
+    "timestamp": "2025-06-16T16:24:02.755139"
   },
   {
     "test": "Port Prefect configuré",
@@ -53,7 +53,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.504995"
+    "timestamp": "2025-06-16T16:24:02.756146"
   },
   {
     "test": "Volume Uptime Kuma configuré",
@@ -61,7 +61,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.504995"
+    "timestamp": "2025-06-16T16:24:02.756146"
   },
   {
     "test": "Import présent: from prefect import flow, task",
@@ -69,7 +69,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.505996"
+    "timestamp": "2025-06-16T16:24:02.758148"
   },
   {
     "test": "Import présent: from prefect.logging import get_run_logger",
@@ -77,7 +77,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.507999"
+    "timestamp": "2025-06-16T16:24:02.758148"
   },
   {
     "test": "Import présent: import random",
@@ -85,7 +85,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.509540"
+    "timestamp": "2025-06-16T16:24:02.758148"
   },
   {
     "test": "Décorateur @task",
@@ -93,7 +93,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.509540"
+    "timestamp": "2025-06-16T16:24:02.758148"
   },
   {
     "test": "Décorateur @flow",
@@ -101,7 +101,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.511078"
+    "timestamp": "2025-06-16T16:24:02.758148"
   },
   {
     "test": "Fonction check_random",
@@ -109,7 +109,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.511078"
+    "timestamp": "2025-06-16T16:24:02.759175"
   },
   {
     "test": "Fonction periodic_check",
@@ -117,7 +117,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.511078"
+    "timestamp": "2025-06-16T16:24:02.760169"
   },
   {
     "test": "Configuration retries",
@@ -125,7 +125,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.511078"
+    "timestamp": "2025-06-16T16:24:02.760169"
   },
   {
     "test": "Configuration retry_delay",
@@ -133,7 +133,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.511078"
+    "timestamp": "2025-06-16T16:24:02.760169"
   },
   {
     "test": "Génération nombre aléatoire",
@@ -141,7 +141,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.512091"
+    "timestamp": "2025-06-16T16:24:02.760169"
   },
   {
     "test": "Condition seuil 0.5",
@@ -149,7 +149,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.512091"
+    "timestamp": "2025-06-16T16:24:02.761156"
   },
   {
     "test": "Configuration serve",
@@ -157,7 +157,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.512091"
+    "timestamp": "2025-06-16T16:24:02.761156"
   },
   {
     "test": "Intervalle 30 secondes",
@@ -165,7 +165,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.512091"
+    "timestamp": "2025-06-16T16:24:02.761670"
   },
   {
     "test": "Fonction send_discord_embed",
@@ -173,7 +173,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.514087"
+    "timestamp": "2025-06-16T16:24:02.762678"
   },
   {
     "test": "Structure embeds",
@@ -181,7 +181,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.514087"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Titre pipeline",
@@ -189,7 +189,7 @@
     "details": "Élément manquant: \"title\": \"Résultats du pipeline\"",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.514087"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Couleur verte",
@@ -197,7 +197,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.515085"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Champ Status",
@@ -205,7 +205,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.515085"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Valeur Succès",
@@ -213,7 +213,7 @@
     "details": "Élément manquant: \"Succès\"",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.515085"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Requête POST",
@@ -221,7 +221,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.516089"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Vérification status 204",
@@ -229,7 +229,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.516089"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Image de base Python 3.11",
@@ -237,7 +237,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.517086"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Répertoire de travail",
@@ -245,7 +245,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.517086"
+    "timestamp": "2025-06-16T16:24:02.763681"
   },
   {
     "test": "Encodage UTF-8",
@@ -253,7 +253,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.517086"
+    "timestamp": "2025-06-16T16:24:02.765201"
   },
   {
     "test": "Copie du flow",
@@ -261,7 +261,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.518087"
+    "timestamp": "2025-06-16T16:24:02.765201"
   },
   {
     "test": "Commande d'exécution",
@@ -269,15 +269,39 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:16.518087"
+    "timestamp": "2025-06-16T16:24:02.765201"
   },
   {
     "test": "API accessible",
-    "success": false,
-    "details": "Erreur: HTTPConnectionPool(host='localhost', port=9000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001DEA104F5C0>: Failed to establish a new connection: [WinError 10061] Aucune connexion n’a pu être établie car l’ordinateur cible l’a expressément refusée'))",
+    "success": true,
+    "details": "Status: 200",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:20.615851"
+    "timestamp": "2025-06-16T16:24:02.788262"
+  },
+  {
+    "test": "Endpoint racine",
+    "success": true,
+    "details": "Status: 200",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T16:24:02.801978"
+  },
+  {
+    "test": "Endpoint status",
+    "success": true,
+    "details": "Status: 200",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T16:24:02.829999"
+  },
+  {
+    "test": "Documentation API",
+    "success": true,
+    "details": "Status: 200",
+    "expected": "",
+    "actual": "",
+    "timestamp": "2025-06-16T16:24:02.844338"
   },
   {
     "test": "Envoi notification Discord",
@@ -285,23 +309,23 @@
     "details": "Message envoyé avec succès",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:22.425335"
+    "timestamp": "2025-06-16T16:24:04.136652"
   },
   {
     "test": "Construction image FastAPI",
-    "success": false,
-    "details": null,
+    "success": true,
+    "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:43:39.491387"
+    "timestamp": "2025-06-16T16:24:07.420334"
   },
   {
     "test": "Construction image Prefect",
     "success": false,
-    "details": "#0 building with \"default\" instance using docker driver\n\n#1 [internal] load build definition from Dockerfile.prefect\n#1 transferring dockerfile: 864B 0.0s done\n#1 DONE 0.1s\n\n#2 [internal] load metadata for docker.io/library/python:3.11-slim\n#2 ERROR: failed to do request: Head \"https://registry-1.docker.io/v2/library/python/manifests/3.11-slim\": dialing registry-1.docker.io:443 container via direct connection because  has no HTTPS proxy: connecting to 98.85.153.80:443: dial tcp 98.85.153.80:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.\n------\n > [internal] load metadata for docker.io/library/python:3.11-slim:\n------\nDockerfile.prefect:2\n--------------------\n   1 |     # Use Python 3.11 slim image\n   2 | >>> FROM python:3.11-slim\n   3 |     \n   4 |     # Set working directory\n--------------------\nERROR: failed to solve: python:3.11-slim: failed to do request: Head \"https://registry-1.docker.io/v2/library/python/manifests/3.11-slim\": dialing registry-1.docker.io:443 container via direct connection because  has no HTTPS proxy: connecting to 98.85.153.80:443: dial tcp 98.85.153.80:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.\n\nView build details: docker-desktop://dashboard/build/default/default/ly42oj28aayc0ygp5ivezmxqm\n",
+    "details": "Timeout",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:44:02.685785"
+    "timestamp": "2025-06-16T16:24:37.764791"
   },
   {
     "test": "Variable DISCORD_WEBHOOK_URL dans .env",
@@ -309,7 +333,7 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:44:02.687413"
+    "timestamp": "2025-06-16T16:24:37.765846"
   },
   {
     "test": "DISCORD_WEBHOOK_URL configuré",
@@ -317,6 +341,6 @@
     "details": "",
     "expected": "",
     "actual": "",
-    "timestamp": "2025-06-16T13:44:02.687413"
+    "timestamp": "2025-06-16T16:24:37.765846"
   }
 ]
