@@ -15,8 +15,9 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import joblib
+from sklearn.linear_model import LinearRegression
 import os
-import mlflow
+from utilities import send_discord_embed
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -28,50 +29,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-def send_discord_embed(message: str, status: str = "Succès") -> None:
-    """Send a notification to Discord via Webhook when API status changes."""
-    DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
-    
-    if not DISCORD_WEBHOOK_URL:
-        logger.warning("Discord webhook URL not configured")
-        return
-    
-    # Color mapping for different statuses
-    color_map = {
-        "Succès": 5814783,  # Green
-        "Erreur": 15158332,  # Red
-        "Avertissement": 16776960,  # Yellow
-        "Info": 3447003  # Blue
-    }
-    
-    data = {
-        "embeds": [{
-            "title": "Résultats du pipeline",
-            "description": message,
-            "color": color_map.get(status, 3447003),
-            "fields": [{
-                "name": "Status",
-                "value": status,
-                "inline": True
-            }, {
-                "name": "Timestamp",
-                "value": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "inline": True
-            }],
-            "footer": {
-                "text": "IA Continu Solution"
-            }
-        }]
-    }
-    
-    try:
-        response = requests.post(DISCORD_WEBHOOK_URL, json=data, timeout=30)
-        if response.status_code != 204:
-            logger.error(f"Erreur lors de l'envoi de l'embed : {response.status_code}")
-        else:
-            logger.info("Embed envoyé avec succès !")
-    except requests.RequestException as e:
-        logger.error(f"Erreur de connexion Discord : {e}")
 
 @app.get("/")
 async def root() -> Dict[str, str]:
@@ -137,7 +94,7 @@ DB_PATH = "sqlite:///"+os.getenv("DB_PATH", "/data/db.sqlite3")
 orm_model=""
 engine = create_engine(DB_PATH, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-orm_model.metadata.create_all(bind=engine)
+#orm_model.metadata.create_all(bind=engine)
 
 def get_db():
     db = SessionLocal()
