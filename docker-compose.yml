@@ -1,38 +1,21 @@
 version: '3.8'
 
 services:
-  # FastAPI Application
+  # FastAPI ML Application
   app:
     build: .
     container_name: fastapi_app
     ports:
-      - "9000:8000"
+      - "8000:8000"
     environment:
-      - ENVIRONMENT=production
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health', timeout=10)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    networks:
-      - monitoring-network
-
-  # Uptime Kuma Monitoring
-  uptime-kuma:
-    image: louislam/uptime-kuma:latest
-    container_name: uptime_kuma
-    ports:
-      - "3001:3001"
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
     volumes:
-      - uptime-kuma-data:/app/data
-    restart: unless-stopped
+      - app_data:/app/data
+      - app_models:/app/models
     depends_on:
-      - app
-    networks:
-      - monitoring-network
+      - prefect-server
+    restart: unless-stopped
 
   # Prefect Server
   prefect-server:
@@ -43,45 +26,63 @@ services:
       - "4200:4200"
     volumes:
       - prefect_data:/root/.prefect
-    environment:
-      - PREFECT_SERVER_API_HOST=0.0.0.0
-      - PREFECT_API_URL=http://prefect-server:4200/api
+    restart: unless-stopped
+
+  # MLflow Server
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: mlflow_server
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/tmp/mlflow
+    command: >
+      bash -c "
+        pip install mlflow==2.8.1 requests &&
+        mkdir -p /tmp/mlflow /tmp/mlruns &&
+        mlflow server
+        --backend-store-uri sqlite:///tmp/mlflow/mlflow.db
+        --default-artifact-root /tmp/mlruns
+        --host 0.0.0.0
+        --port 5000
+        --serve-artifacts
+      "
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4200/api/health"]
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
-    networks:
-      - monitoring-network
 
-  # Prefect Flow Worker
-  prefect-worker:
-    build:
-      context: .
-      dockerfile: Dockerfile.prefect
-    container_name: prefect-worker
+  # Random Check Flow
+  random-check-flow:
+    build: .
+    container_name: random_check_flow
     depends_on:
-      prefect-server:
-        condition: service_healthy
-      app:
-        condition: service_healthy
+      - prefect-server
+      - app
     environment:
       - PREFECT_API_URL=http://prefect-server:4200/api
       - PYTHONIOENCODING=utf-8
       - API_URL=http://fastapi_app:8000
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    command: python flow.py
     restart: unless-stopped
-    networks:
-      - monitoring-network
+
+  # Uptime Kuma
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime_kuma
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
 
 volumes:
-  uptime-kuma-data:
-    driver: local
+  app_data:
+  app_models:
   prefect_data:
-    driver: local
-
-networks:
-  monitoring-network:
-    driver: bridge
+  uptime-kuma-data:
+  mlflow_data:
