@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-import numpy as np
+from fastapi.responses import JSONResponse
+
 app = FastAPI()
 
 @app.get("/health")
 def health_check():
-    return "test"#np.random.uniform(0,1)
-
+    return JSONResponse(content={"status": "ok"}, status_code=200)
