@@ -8,8 +8,22 @@ import os
 import random
 import time
 import requests
+import logging
+from pathlib import Path
 from prefect import flow, task
 from prefect.logging import get_run_logger
+
+# Configure logging for Prefect flow
+logs_dir = Path("logs")
+logs_dir.mkdir(exist_ok=True)
+
+# Setup file logging
+file_handler = logging.FileHandler(logs_dir / "prefect_flow.log")
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+
+# Add file handler to root logger
+logging.getLogger().addHandler(file_handler)
 
 # Set environment variables
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")

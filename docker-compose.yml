@@ -13,6 +13,7 @@ services:
     volumes:
       - app_data:/app/data
       - app_models:/app/models
+      - app_logs:/app/logs
     depends_on:
       - prefect-server
     restart: unless-stopped
@@ -26,6 +27,7 @@ services:
       - "4200:4200"
     volumes:
       - prefect_data:/root/.prefect
+      - app_logs:/app/logs
     restart: unless-stopped
 
   # MLflow Server
@@ -46,6 +48,7 @@ services:
         --host 0.0.0.0
         --port 5000
         --serve-artifacts
+        --gunicorn-opts '--bind 0.0.0.0:5000'
       "
     restart: unless-stopped
     healthcheck:
@@ -67,6 +70,8 @@ services:
       - PYTHONIOENCODING=utf-8
       - API_URL=http://fastapi_app:8000
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    volumes:
+      - app_logs:/app/logs
     command: python flow.py
     restart: unless-stopped
 
@@ -83,6 +88,7 @@ services:
 volumes:
   app_data:
   app_models:
+  app_logs:
   prefect_data:
   uptime-kuma-data:
   mlflow_data:

@@ -21,7 +21,18 @@ import requests
 from pathlib import Path
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logs_dir = Path("logs")
+logs_dir.mkdir(exist_ok=True)
+
+# Configure logging with both file and console handlers
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(logs_dir / "api.log"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
