@@ -20,6 +20,7 @@ COPY config/ ./config/
 COPY .env .
 COPY main.py .
 COPY flow.py .
+COPY streamlit_app.py .
 
 # Create necessary directories
 RUN mkdir -p data models

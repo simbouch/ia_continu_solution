@@ -75,21 +75,41 @@ def check_random():
     if random_value < 0.5:
         logger.warning(f"Random value {random_value} < 0.5 - Model drift detected! Triggering retrain...")
         
-        # Trigger retrain
+        # Trigger conditional retrain
         try:
-            response = requests.post(f"{API_URL}/retrain", timeout=60)
+            # Utiliser la nouvelle route conditionnelle avec seuil dynamique
+            payload = {
+                "accuracy_threshold": 0.8,  # Seuil de performance
+                "force_retrain": False
+            }
+            response = requests.post(f"{API_URL}/retrain/conditional", json=payload, timeout=60)
             if response.status_code == 200:
                 data = response.json()
-                logger.info(f"Retrain successful: {data}")
-                send_discord_embed(f"Retrain déclenché avec succès. Nouvelle précision: {data.get('accuracy', 'N/A')}")
-                return {"status": "retrain_success", "random_value": random_value, "retrain_data": data}
+                logger.info(f"Conditional retrain evaluation: {data}")
+
+                if data.get('retrain_triggered', False):
+                    send_discord_embed(
+                        f"🔄 Retrain déclenché automatiquement\n"
+                        f"Raison: {data.get('action_taken', 'N/A')}\n"
+                        f"Précision actuelle: {data.get('current_accuracy', 'N/A'):.3f}\n"
+                        f"Seuil: {data.get('threshold', 'N/A'):.3f}\n"
+                        f"Nouveau modèle: {data.get('model_version', 'N/A')}"
+                    )
+                else:
+                    send_discord_embed(
+                        f"✅ Modèle évalué - Pas de retrain nécessaire\n"
+                        f"Précision actuelle: {data.get('current_accuracy', 'N/A'):.3f}\n"
+                        f"Seuil: {data.get('threshold', 'N/A'):.3f}"
+                    )
+
+                return {"status": "conditional_retrain_success", "random_value": random_value, "retrain_data": data}
             else:
-                logger.error(f"Retrain failed with status {response.status_code}")
-                send_discord_embed(f"Échec du retrain. Code: {response.status_code}", "Échec")
-                raise Exception(f"Retrain failed: {response.status_code}")
+                logger.error(f"Conditional retrain failed with status {response.status_code}")
+                send_discord_embed(f"Échec de l'évaluation conditionnelle. Code: {response.status_code}", "Échec")
+                raise Exception(f"Conditional retrain failed: {response.status_code}")
         except Exception as e:
-            logger.error(f"Retrain error: {e}")
-            send_discord_embed(f"Erreur lors du retrain: {str(e)}", "Échec")
+            logger.error(f"Conditional retrain error: {e}")
+            send_discord_embed(f"Erreur lors de l'évaluation conditionnelle: {str(e)}", "Échec")
             raise
     else:
         logger.info(f"Random value {random_value} >= 0.5 - Model is OK")

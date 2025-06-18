@@ -237,9 +237,28 @@ def test_complete_workflow():
         # Step 3: Retrain model
         print("   3. Retraining model...")
         time.sleep(2)  # Wait for database
-        retrain_response = requests.post(f"{API_BASE_URL}/retrain", timeout=60)
-        assert retrain_response.status_code == 200, "Retrain should succeed"
-        retrain_data = retrain_response.json()
+
+        # Retry retrain if database is locked
+        retrain_success = False
+        for attempt in range(3):
+            try:
+                retrain_response = requests.post(f"{API_BASE_URL}/retrain", timeout=60)
+                if retrain_response.status_code == 200:
+                    retrain_data = retrain_response.json()
+                    retrain_success = True
+                    break
+                elif "database is locked" in retrain_response.text:
+                    print(f"   ⚠️ Database locked, retrying attempt {attempt + 1}/3...")
+                    time.sleep(5)
+                else:
+                    break
+            except Exception as e:
+                if attempt == 2:  # Last attempt
+                    raise
+                print(f"   ⚠️ Retrain error, retrying: {e}")
+                time.sleep(5)
+
+        assert retrain_success, f"Retrain should succeed after retries. Last response: {retrain_response.status_code if 'retrain_response' in locals() else 'No response'}"
         
         # Step 4: Make prediction with new model
         print("   4. Testing new model...")

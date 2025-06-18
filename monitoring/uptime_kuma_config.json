@@ -1,0 +1,101 @@
+{
+  "monitors": [
+    {
+      "name": "FastAPI Health",
+      "type": "http",
+      "url": "http://fastapi_app:8000/health",
+      "interval": 60,
+      "retryInterval": 60,
+      "maxretries": 3,
+      "timeout": 10,
+      "method": "GET",
+      "headers": {},
+      "body": "",
+      "httpBodyEncoding": "json",
+      "description": "Monitor FastAPI health endpoint",
+      "keyword": "ok",
+      "invertKeyword": false,
+      "ignoreTls": false,
+      "upsideDown": false,
+      "packetSize": 56,
+      "port": null,
+      "hostname": null,
+      "mqttTopic": "",
+      "mqttSuccessMessage": "",
+      "databaseConnectionString": "",
+      "databaseQuery": "",
+      "authMethod": "",
+      "authWorkstation": "",
+      "authDomain": "",
+      "radiusCalledStationId": "",
+      "radiusCallingStationId": "",
+      "game": "",
+      "jsonPath": "",
+      "expectedValue": "",
+      "kafkaProducerTopic": "",
+      "kafkaProducerBrokers": [],
+      "kafkaProducerSsl": false,
+      "kafkaProducerAllowAutoTopicCreation": false,
+      "kafkaProducerMessage": "",
+      "cacheBust": false,
+      "proxyId": null,
+      "notificationIDList": {},
+      "tags": []
+    }
+  ],
+  "notifications": [
+    {
+      "name": "Discord Webhook",
+      "type": "discord",
+      "discordWebhookUrl": "${DISCORD_WEBHOOK_URL}",
+      "discordUsername": "Uptime Kuma",
+      "discordPrefixMessage": "",
+      "discordChannelType": "channel",
+      "isDefault": true,
+      "applyExisting": true
+    }
+  ],
+  "status_pages": [
+    {
+      "title": "IA Continu Solution Status",
+      "description": "Status page for ML pipeline services",
+      "theme": "dark",
+      "published": true,
+      "showTags": true,
+      "domainNameList": [],
+      "customCSS": "",
+      "footerText": "IA Continu Solution - Day 3",
+      "showPoweredBy": true,
+      "icon": "/icon.svg",
+      "publicGroupList": [
+        {
+          "name": "Core Services",
+          "weight": 1,
+          "monitorList": [
+            {
+              "name": "FastAPI Health"
+            },
+            {
+              "name": "Prefect Server"
+            },
+            {
+              "name": "MLflow Server"
+            }
+          ]
+        },
+        {
+          "name": "Monitoring",
+          "weight": 2,
+          "monitorList": [
+            {
+              "name": "Prometheus"
+            },
+            {
+              "name": "Grafana"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
