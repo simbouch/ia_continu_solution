@@ -20,6 +20,39 @@ UPTIME_KUMA_URL = "http://localhost:3001"
 MLFLOW_URL = "http://localhost:5000"
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
+# Authentication
+TEST_USERNAME = "testuser"
+TEST_PASSWORD = "test123"
+auth_token = None
+
+def get_auth_token():
+    """Get authentication token for API calls"""
+    global auth_token
+    if auth_token:
+        return auth_token
+
+    try:
+        login_data = {"username": TEST_USERNAME, "password": TEST_PASSWORD}
+        response = requests.post(f"{API_BASE_URL}/auth/login", json=login_data, timeout=10)
+        if response.status_code == 200:
+            token_data = response.json()
+            auth_token = token_data["access_token"]
+            print(f"✅ Authenticated as {TEST_USERNAME}")
+            return auth_token
+        else:
+            print(f"❌ Authentication failed: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"❌ Authentication error: {e}")
+        return None
+
+def get_auth_headers():
+    """Get headers with authentication token"""
+    token = get_auth_token()
+    if token:
+        return {"Authorization": f"Bearer {token}"}
+    return {}
+
 def send_discord_embed(message, status="Succès"):
     """Send message to Discord via Webhook according to specifications"""
     if not DISCORD_WEBHOOK_URL:
@@ -74,16 +107,21 @@ def test_api_predict():
     """Test predict endpoint - should return 0 or 1"""
     print("🎯 Testing API Predict...")
     try:
+        headers = get_auth_headers()
+        if not headers:
+            print("   ❌ Authentication required but failed")
+            return False
+
         payload = {"features": [0.5, -0.3]}
-        response = requests.post(f"{API_BASE_URL}/predict", json=payload, timeout=10)
+        response = requests.post(f"{API_BASE_URL}/predict", json=payload, headers=headers, timeout=10)
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
-        
+
         data = response.json()
         assert "prediction" in data, "Response should contain 'prediction'"
         assert data["prediction"] in [0, 1], f"Prediction should be 0 or 1, got {data['prediction']}"
         assert "confidence" in data, "Response should contain 'confidence'"
         assert 0 <= data["confidence"] <= 1, "Confidence should be between 0 and 1"
-        
+
         print(f"   ✅ Predict returns {data['prediction']} with confidence {data['confidence']:.3f}")
         return True
     except Exception as e:
@@ -230,7 +268,11 @@ def test_complete_workflow():
         
         # Step 2: Make prediction
         print("   2. Making prediction...")
-        pred_response = requests.post(f"{API_BASE_URL}/predict", json={"features": [0.7, -0.4]}, timeout=10)
+        headers = get_auth_headers()
+        if not headers:
+            raise Exception("Authentication required but failed")
+
+        pred_response = requests.post(f"{API_BASE_URL}/predict", json={"features": [0.7, -0.4]}, headers=headers, timeout=10)
         assert pred_response.status_code == 200, "Prediction should succeed"
         pred_data = pred_response.json()
         
@@ -263,7 +305,7 @@ def test_complete_workflow():
         # Step 4: Make prediction with new model
         print("   4. Testing new model...")
         time.sleep(1)  # Wait for model to be updated in memory
-        pred2_response = requests.post(f"{API_BASE_URL}/predict", json={"features": [0.7, -0.4]}, timeout=10)
+        pred2_response = requests.post(f"{API_BASE_URL}/predict", json={"features": [0.7, -0.4]}, headers=headers, timeout=10)
         assert pred2_response.status_code == 200, "New prediction should succeed"
         pred2_data = pred2_response.json()
 

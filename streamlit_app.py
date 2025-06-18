@@ -97,26 +97,66 @@ class APIClient:
 def authenticate():
     """Interface d'authentification"""
     st.sidebar.title("🔐 Authentification")
-    
-    # Token d'authentification
-    token = st.sidebar.text_input("Token d'accès", type="password", help="Entrez votre token JWT")
-    
-    if token:
-        st.session_state.token = token
-        st.session_state.api_client = APIClient(API_BASE_URL, token)
-        
-        # Tester la connexion
+
+    # Choix du mode d'authentification
+    auth_mode = st.sidebar.radio("Mode d'authentification", ["Username/Password", "Token JWT"])
+
+    if auth_mode == "Username/Password":
+        username = st.sidebar.text_input("Nom d'utilisateur", value="testuser")
+        password = st.sidebar.text_input("Mot de passe", type="password", value="test123")
+
+        if st.sidebar.button("🔑 Se connecter"):
+            if username and password:
+                # Obtenir le token via l'API
+                try:
+                    login_data = {"username": username, "password": password}
+                    response = requests.post(f"{API_BASE_URL}/auth/login", json=login_data, timeout=10)
+
+                    if response.status_code == 200:
+                        token_data = response.json()
+                        token = token_data["access_token"]
+                        st.session_state.token = token
+                        st.session_state.api_client = APIClient(API_BASE_URL, token)
+                        st.sidebar.success(f"✅ Connecté en tant que {username}")
+                        return True
+                    else:
+                        st.sidebar.error("❌ Identifiants incorrects")
+                        return False
+                except Exception as e:
+                    st.sidebar.error(f"❌ Erreur de connexion: {e}")
+                    return False
+            else:
+                st.sidebar.warning("⚠️ Veuillez saisir vos identifiants")
+                return False
+    else:
+        # Mode token JWT
+        token = st.sidebar.text_input("Token d'accès", type="password", help="Entrez votre token JWT")
+
+        if token:
+            st.session_state.token = token
+            st.session_state.api_client = APIClient(API_BASE_URL, token)
+
+            # Tester la connexion
+            is_healthy, health_data = st.session_state.api_client.health_check()
+            if is_healthy:
+                st.sidebar.success("✅ Authentifié et connecté à l'API")
+                return True
+            else:
+                st.sidebar.error("❌ Erreur de connexion à l'API")
+                st.sidebar.error(f"Détails: {health_data}")
+                return False
+        else:
+            st.sidebar.warning("⚠️ Token requis pour accéder à l'API")
+            return False
+
+    # Vérifier si déjà authentifié
+    if hasattr(st.session_state, 'api_client') and st.session_state.api_client:
         is_healthy, health_data = st.session_state.api_client.health_check()
         if is_healthy:
-            st.sidebar.success("✅ Authentifié et connecté à l'API")
+            st.sidebar.success("✅ Déjà authentifié")
             return True
-        else:
-            st.sidebar.error("❌ Erreur de connexion à l'API")
-            st.sidebar.error(f"Détails: {health_data}")
-            return False
-    else:
-        st.sidebar.warning("⚠️ Token requis pour accéder à l'API")
-        return False
+
+    return False
 
 def main_dashboard():
     """Dashboard principal"""
@@ -383,11 +423,12 @@ def main():
     if not authenticate():
         st.warning("🔐 Veuillez vous authentifier pour accéder au dashboard")
         st.markdown("""
-        ### Comment obtenir un token ?
-        
-        1. Contactez l'administrateur système
-        2. Utilisez l'endpoint `/auth/login` de l'API
-        3. Pour les tests, utilisez le token de développement
+        ### Identifiants par défaut pour les tests :
+
+        - **Utilisateur test** : `testuser` / `test123`
+        - **Administrateur** : `admin` / `admin123`
+
+        Utilisez le mode "Username/Password" dans la barre latérale pour vous connecter facilement.
         """)
         return
     
@@ -396,8 +437,8 @@ def main():
     
     # Footer
     st.sidebar.markdown("---")
-    st.sidebar.markdown("**IA Continu Solution v3.0**")
-    st.sidebar.markdown("Jour 3 - Monitoring & Application")
+    st.sidebar.markdown("**IA Continu Solution v2.0**")
+    st.sidebar.markdown("Production Ready - ML Pipeline & Monitoring")
 
 if __name__ == "__main__":
     main()

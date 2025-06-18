@@ -32,23 +32,22 @@ services:
 
   # MLflow Server
   mlflow-server:
-    image: python:3.11-slim
+    image: ghcr.io/mlflow/mlflow:v2.8.1
     container_name: mlflow_server
     ports:
       - "5000:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=sqlite:///tmp/mlflow/mlflow.db
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/tmp/mlruns
     volumes:
       - mlflow_data:/tmp/mlflow
+      - mlflow_data:/tmp/mlruns
     command: >
-      bash -c "
-        pip install mlflow==2.8.1 requests &&
-        mkdir -p /tmp/mlflow /tmp/mlruns &&
-        mlflow server
-        --backend-store-uri sqlite:///tmp/mlflow/mlflow.db
-        --default-artifact-root /tmp/mlruns
-        --host 0.0.0.0
-        --port 5000
-        --workers 1
-      "
+      mlflow server
+      --backend-store-uri sqlite:///tmp/mlflow/mlflow.db
+      --default-artifact-root /tmp/mlruns
+      --host 0.0.0.0
+      --port 5000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000', timeout=5)"]

@@ -326,12 +326,12 @@ if __name__ == "__main__":
     config = generate_uptime_kuma_config()
     
     # Sauvegarder la configuration
-    with open("monitoring/uptime_kuma_config.json", "w") as f:
+    with open("../monitoring/uptime_kuma_config.json", "w") as f:
         json.dump(config, f, indent=2)
-    
+
     # Créer la documentation
     doc = create_uptime_kuma_documentation()
-    with open("monitoring/uptime_kuma_setup.md", "w") as f:
+    with open("../monitoring/uptime_kuma_setup.md", "w") as f:
         f.write(doc)
     
     # Essayer de configurer automatiquement
@@ -340,6 +340,6 @@ if __name__ == "__main__":
     
     print("✅ Configuration Uptime Kuma générée")
     print("📁 Fichiers créés:")
-    print("   - monitoring/uptime_kuma_config.json")
-    print("   - monitoring/uptime_kuma_setup.md")
+    print("   - ../monitoring/uptime_kuma_config.json")
+    print("   - ../monitoring/uptime_kuma_setup.md")
     print("🔧 Configuration manuelle requise via l'interface web")
