@@ -22,12 +22,13 @@ RUN pip install --no-cache-dir -r requirements_prefect.txt
 
 # Copy Prefect flow
 COPY flow.py .
-COPY utilities.py .
+COPY utils ./utils
 
 # Create non-root user
-RUN adduser --disabled-password --gecos '' prefectuser
-RUN chown -R prefectuser:prefectuser /app
-USER prefectuser
+#RUN groupadd -g 1000 appgroup && useradd -m -u 1000 -g appgroup appuser
+#RUN chown -R appuser:appgroup /app
+#USER appuser
+
 
 # Wait for Prefect server to be ready and then start the flow
 CMD ["sh", "-c", "sleep 10 && python flow.py"]

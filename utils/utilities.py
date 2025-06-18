@@ -1,4 +1,23 @@
 import requests
+import os
+from pathlib import Path
+from datetime import datetime, timezone
+import logging
+# Configure logging
+logs_dir = Path("logs")
+logs_dir.mkdir(exist_ok=True)
+
+# Configure logging with both file and console handlers
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(logs_dir / "api.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
 
 def send_discord_embed(message: str, status: str = "Succès") -> None:
     """Send a notification to Discord via Webhook when API status changes."""
