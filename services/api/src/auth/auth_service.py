@@ -296,7 +296,9 @@ class AuthService:
             
         except jwt.ExpiredSignatureError:
             return None
-        except jwt.InvalidTokenError:
+        except jwt.DecodeError:
+            return None
+        except jwt.InvalidSignatureError:
             return None
         except Exception:
             return None

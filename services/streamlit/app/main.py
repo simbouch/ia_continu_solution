@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # Configuration API
-API_BASE_URL = os.getenv("API_URL", "http://localhost:8000")
+API_BASE_URL = os.getenv("API_URL", "http://host.docker.internal:8000")
 
 class APIClient:
     """Client pour interagir avec l'API"""
@@ -85,6 +85,17 @@ def authenticate():
     """Interface d'authentification"""
     st.sidebar.title("🔐 Authentification")
 
+    # Vérifier si déjà authentifié
+    if hasattr(st.session_state, 'api_client') and st.session_state.api_client:
+        is_healthy, health_data = st.session_state.api_client.health_check()
+        if is_healthy:
+            st.sidebar.success("✅ Déjà authentifié")
+            if st.sidebar.button("🚪 Se déconnecter"):
+                del st.session_state.api_client
+                del st.session_state.token
+                st.rerun()
+            return True
+
     # Choix du mode d'authentification
     auth_mode = st.sidebar.radio("Mode d'authentification", ["Username/Password", "Token JWT"])
 
@@ -105,7 +116,7 @@ def authenticate():
                         st.session_state.token = token
                         st.session_state.api_client = APIClient(API_BASE_URL, token)
                         st.sidebar.success(f"✅ Connecté en tant que {username}")
-                        return True
+                        st.rerun()
                     else:
                         st.sidebar.error("❌ Identifiants incorrects")
                         return False
@@ -136,19 +147,12 @@ def authenticate():
             st.sidebar.warning("⚠️ Token requis pour accéder à l'API")
             return False
 
-    # Vérifier si déjà authentifié
-    if hasattr(st.session_state, 'api_client') and st.session_state.api_client:
-        is_healthy, health_data = st.session_state.api_client.health_check()
-        if is_healthy:
-            st.sidebar.success("✅ Déjà authentifié")
-            return True
-
     return False
 
 def main_dashboard():
     """Dashboard principal"""
-    st.title("🤖 IA Continu Solution - Dashboard")
-    st.markdown("Interface de gestion et monitoring du pipeline ML")
+    st.title("🤖 IA Continu Solution - Day 4 Dashboard")
+    st.markdown("🚀 **Day 4 Implementation** - Interface complète de gestion et monitoring du pipeline ML")
     
     # Vérifier la santé de l'API
     is_healthy, health_data = st.session_state.api_client.health_check()
@@ -312,16 +316,44 @@ def dataset_management():
 
 def monitoring_dashboard():
     """Dashboard de monitoring"""
-    st.header("📈 Monitoring")
-    
+    st.header("📈 Monitoring - Day 4")
+
+    # Check service status in real-time
+    st.subheader("🔍 Service Status Check")
+
+    services = {
+        "🔬 MLflow": "http://localhost:5000/",
+        "📡 Uptime Kuma": "http://localhost:3001/",
+        "⚡ Prefect": "http://localhost:4200/api/ready",
+        "🔍 Prometheus": "http://localhost:9090/",
+        "📊 Grafana": "http://localhost:3000/"
+    }
+
+    if st.button("🔄 Check Service Status"):
+        cols = st.columns(len(services))
+        for i, (name, url) in enumerate(services.items()):
+            with cols[i]:
+                try:
+                    import requests
+                    response = requests.get(url, timeout=3)
+                    if response.status_code == 200:
+                        st.success(f"{name}\n✅ Online")
+                    else:
+                        st.error(f"{name}\n❌ Error {response.status_code}")
+                except:
+                    st.error(f"{name}\n❌ Offline")
+
     st.markdown("""
-    ### Liens vers les outils de monitoring
-    
-    - 🔍 **Prometheus**: [http://localhost:9090](http://localhost:9090)
-    - 📊 **Grafana**: [http://localhost:3000](http://localhost:3000) (admin/admin123)
-    - 📡 **Uptime Kuma**: [http://localhost:3001](http://localhost:3001)
-    - 🔬 **MLflow**: [http://localhost:5000](http://localhost:5000)
-    - ⚡ **Prefect**: [http://localhost:4200](http://localhost:4200)
+    ### 🔗 Monitoring Services
+
+    #### ✅ Working Services:
+    - 🔬 **MLflow**: [http://localhost:5000](http://localhost:5000) - ML Experiment Tracking
+    - 📡 **Uptime Kuma**: [http://localhost:3001](http://localhost:3001) - Service Monitoring
+
+    #### ⚠️ Additional Services (Optional):
+    - ⚡ **Prefect**: [http://localhost:4200](http://localhost:4200) - Workflow Orchestration
+    - 🔍 **Prometheus**: [http://localhost:9090](http://localhost:9090) - Metrics Collection
+    - 📊 **Grafana**: [http://localhost:3000](http://localhost:3000) - Dashboards (admin/admin123)
     """)
     
     # Métriques en temps réel (simulation)
@@ -376,27 +408,37 @@ def admin_interface():
 def main():
     """Fonction principale"""
     st.sidebar.image("https://via.placeholder.com/200x100/1f77b4/white?text=IA+Continu", width=200)
-    
+
     # Authentification
     if not authenticate():
         st.warning("🔐 Veuillez vous authentifier pour accéder au dashboard")
         st.markdown("""
-        ### Identifiants par défaut pour les tests :
+        ### 🔑 Connexion Requise - Day 4 Implementation
 
-        - **Utilisateur test** : `testuser` / `test123`
+        Pour accéder au dashboard IA Continu Solution, veuillez vous connecter avec vos identifiants :
+
+        #### Comptes de test disponibles :
+        - **Utilisateur standard** : `testuser` / `test123`
         - **Administrateur** : `admin` / `admin123`
 
-        Utilisez le mode "Username/Password" dans la barre latérale pour vous connecter facilement.
+        Utilisez le mode "Username/Password" dans la barre latérale pour vous connecter.
+
+        ---
+        **Day 4 Features:**
+        - ✅ Authentication sécurisée
+        - ✅ Interface ML complète
+        - ✅ Monitoring intégré
+        - ✅ Pipeline automatisé
         """)
         return
-    
+
     # Dashboard principal
     main_dashboard()
-    
+
     # Footer
     st.sidebar.markdown("---")
-    st.sidebar.markdown("**IA Continu Solution v2.0**")
-    st.sidebar.markdown("Production Ready - ML Pipeline & Monitoring")
+    st.sidebar.markdown("**IA Continu Solution v4.0 - Day 4**")
+    st.sidebar.markdown("🚀 Production Ready - ML Pipeline & Monitoring")
 
 if __name__ == "__main__":
     main()

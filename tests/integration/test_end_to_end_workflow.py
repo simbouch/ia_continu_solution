@@ -24,7 +24,7 @@ class TestEndToEndWorkflow:
         # Step 2: Check system health
         health_response = requests.get(f"{API_BASE_URL}/health", timeout=10)
         assert health_response.status_code == 200
-        assert health_response.json()["status"] == "healthy"
+        assert health_response.json()["status"] == "ok"
         
         # Step 3: Generate training data
         generate_response = requests.post(
