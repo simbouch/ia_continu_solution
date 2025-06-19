@@ -1,0 +1,41 @@
+version: '3.8'
+
+# Simple working configuration for missing services
+services:
+  # MLflow (Simple setup)
+  mlflow:
+    image: python:3.11-slim
+    container_name: simple_mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_data:/app/mlflow
+      - ./mlruns:/app/mlruns
+    working_dir: /app
+    command: >
+      bash -c "
+        pip install mlflow==2.8.1 &&
+        mkdir -p /app/mlflow /app/mlruns &&
+        mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///app/mlflow/mlflow.db --default-artifact-root /app/mlruns --gunicorn-opts '--bind=0.0.0.0:5000 --workers=1'
+      "
+    restart: unless-stopped
+    networks:
+      - simple_network
+
+  # Uptime Kuma (Simple monitoring)
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: simple_uptime_kuma
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./uptime_kuma_data:/app/data
+    restart: unless-stopped
+    networks:
+      - simple_network
+
+networks:
+  simple_network:
+    driver: bridge
+    external: true
+    name: ia_continu_solution_ia_continu_network

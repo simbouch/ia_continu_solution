@@ -158,3 +158,40 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# IA Continu Solution specific
+# MLflow
+mlruns/
+mlartifacts/
+
+# Models
+models/*.pkl
+models/*.joblib
+models/*.h5
+
+# Logs
+logs/
+*.log.*
+
+# Streamlit
+.streamlit/
+
+# Prefect
+.prefect/
+
+# Monitoring data
+monitoring/data/
+prometheus_data/
+grafana_data/
+
+# Database files
+data/*.db
+data/*.sqlite
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
