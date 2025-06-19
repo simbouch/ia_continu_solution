@@ -8,10 +8,7 @@ import sys
 import os
 from pathlib import Path
 from loguru import logger
-from datetime import datetime
-import json
-from typing import Dict, Any, Optional
-import requests
+from typing import Dict, Any
 
 class LoguruLogger:
     """Service de logging avancé avec Loguru"""
@@ -33,169 +30,44 @@ class LoguruLogger:
         logger.info(f"Loguru logger initialized for {app_name}")
     
     def _setup_handlers(self):
-        """Configurer les différents handlers de logging"""
-        
-        # 1. Console handler avec couleurs
+        """Configurer les différents handlers de logging - Simplified to fix recursion"""
+
+        # 1. Console handler simple
         logger.add(
             sys.stdout,
-            format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-                   "<level>{level: <8}</level> | "
-                   "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
-                   "<level>{message}</level>",
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {message}",
             level="INFO",
-            colorize=True,
-            backtrace=True,
-            diagnose=True
+            colorize=False,  # Disable colorize to prevent recursion
+            backtrace=False,  # Disable backtrace to prevent recursion
+            diagnose=False    # Disable diagnose to prevent recursion
         )
-        
-        # 2. Fichier général avec rotation
+
+        # 2. Fichier général avec rotation - simplified
         logger.add(
             self.logs_dir / "app.log",
             format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {message}",
             level="DEBUG",
             rotation="10 MB",
             retention="30 days",
-            compression="zip",
-            backtrace=True,
-            diagnose=True
+            backtrace=False,
+            diagnose=False
         )
-        
-        # 3. Fichier des erreurs uniquement
+
+        # 3. Fichier des erreurs uniquement - simplified
         logger.add(
             self.logs_dir / "errors.log",
             format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {message}",
             level="ERROR",
             rotation="5 MB",
             retention="60 days",
-            compression="zip",
-            backtrace=True,
-            diagnose=True
-        )
-        
-        # 4. Fichier API avec format JSON
-        logger.add(
-            self.logs_dir / "api.json",
-            format=self._json_formatter,
-            level="INFO",
-            rotation="20 MB",
-            retention="30 days",
-            compression="zip",
-            filter=lambda record: "api" in record["extra"]
-        )
-        
-        # 5. Fichier ML avec format JSON
-        logger.add(
-            self.logs_dir / "ml.json",
-            format=self._json_formatter,
-            level="INFO",
-            rotation="10 MB",
-            retention="30 days",
-            compression="zip",
-            filter=lambda record: "ml" in record["extra"]
-        )
-        
-        # 6. Fichier monitoring
-        logger.add(
-            self.logs_dir / "monitoring.log",
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
-            level="INFO",
-            rotation="5 MB",
-            retention="15 days",
-            filter=lambda record: "monitoring" in record["extra"]
-        )
-        
-        # 7. Handler Discord pour erreurs critiques
-        logger.add(
-            self._discord_handler,
-            level="CRITICAL",
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
-            backtrace=True,
-            diagnose=True
+            backtrace=False,
+            diagnose=False
         )
     
-    def _json_formatter(self, record):
-        """Formateur JSON pour les logs structurés"""
-        log_entry = {
-            "timestamp": record["time"].isoformat(),
-            "level": record["level"].name,
-            "logger": record["name"],
-            "function": record["function"],
-            "line": record["line"],
-            "message": record["message"],
-            "module": record["module"],
-            "process": record["process"].id,
-            "thread": record["thread"].id,
-            "extra": record["extra"]
-        }
-        
-        if record["exception"]:
-            log_entry["exception"] = {
-                "type": record["exception"].type.__name__,
-                "value": str(record["exception"].value),
-                "traceback": record["exception"].traceback
-            }
-        
-        return json.dumps(log_entry, ensure_ascii=False) + "\n"
+    # Removed problematic JSON formatter and Discord handler to fix recursion issues
     
-    def _discord_handler(self, message):
-        """Handler pour envoyer les erreurs critiques à Discord"""
-        if not self.discord_webhook:
-            return
-        
-        try:
-            record = message.record
-            
-            embed = {
-                "embeds": [{
-                    "title": "🚨 Erreur Critique - IA Continu Solution",
-                    "description": f"```\n{record['message']}\n```",
-                    "color": 15158332,  # Rouge
-                    "fields": [
-                        {
-                            "name": "Niveau",
-                            "value": record["level"].name,
-                            "inline": True
-                        },
-                        {
-                            "name": "Module",
-                            "value": f"{record['name']}:{record['function']}:{record['line']}",
-                            "inline": True
-                        },
-                        {
-                            "name": "Timestamp",
-                            "value": record["time"].strftime("%Y-%m-%d %H:%M:%S"),
-                            "inline": True
-                        }
-                    ],
-                    "footer": {
-                        "text": f"Process: {record['process'].id} | Thread: {record['thread'].id}"
-                    }
-                }]
-            }
-            
-            if record["exception"]:
-                embed["embeds"][0]["fields"].append({
-                    "name": "Exception",
-                    "value": f"```\n{record['exception'].type.__name__}: {record['exception'].value}\n```",
-                    "inline": False
-                })
-            
-            response = requests.post(
-                self.discord_webhook,
-                json=embed,
-                timeout=5
-            )
-            
-            if response.status_code != 204:
-                print(f"Failed to send Discord notification: {response.status_code}")
-                
-        except Exception as e:
-            print(f"Error sending Discord notification: {e}")
-    
-    def get_logger(self, name: str = None):
+    def get_logger(self):
         """Obtenir un logger avec un nom spécifique"""
-        if name:
-            return logger.bind(name=name)
         return logger
     
     def log_api_request(self, method: str, endpoint: str, status_code: int, 
@@ -313,7 +185,7 @@ class LoguruLogger:
 # Instance globale
 _logger_instance = None
 
-def get_logger(name: str = None) -> LoguruLogger:
+def get_logger() -> LoguruLogger:
     """Obtenir l'instance globale du logger"""
     global _logger_instance
     if _logger_instance is None:

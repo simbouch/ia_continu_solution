@@ -42,7 +42,7 @@ services:
       - ./mlflow_data:/app/mlflow
       - ./mlruns:/app/mlruns
     environment:
-      - MLFLOW_BACKEND_STORE_URI=sqlite:///app/mlflow/mlflow.db
+      - MLFLOW_BACKEND_STORE_URI=file:///app/mlflow
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/app/mlruns
     restart: unless-stopped
     networks:
@@ -56,7 +56,7 @@ services:
 
   # Prefect Server (Orchestration)
   prefect-server:
-    image: prefecthq/prefect:3-latest
+    image: prefecthq/prefect:2-latest
     command: prefect server start --host 0.0.0.0
     container_name: ia_continu_prefect_server
     ports:
@@ -77,24 +77,25 @@ services:
       retries: 3
       start_period: 60s
 
-  # Prefect ML Automation Worker
-  prefect-automation:
-    build:
-      context: .
-      dockerfile: services/prefect/Dockerfile
-    container_name: ia_continu_prefect_automation
+  # Simple ML Automation (Alternative to Prefect)
+  ml-automation:
+    image: python:3.11-slim
+    container_name: ia_continu_ml_automation
     depends_on:
-      - prefect-server
       - api
       - mlflow
     environment:
-      - PREFECT_API_URL=http://prefect-server:4200/api
       - API_URL=http://api:8000
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-      - PYTHONIOENCODING=utf-8
     volumes:
+      - ./services/monitoring/simple_automation.py:/app/automation.py
       - ./logs:/app/logs
+    command: >
+      bash -c "
+        pip install requests &&
+        python /app/automation.py
+      "
     restart: unless-stopped
     networks:
       - ia_continu_network
@@ -136,6 +137,45 @@ services:
     restart: unless-stopped
     networks:
       - ia_continu_network
+
+  # Prometheus (Metrics Collection)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ia_continu_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - ia_continu_network
+
+  # Grafana (Metrics Visualization)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ia_continu_grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    networks:
+      - ia_continu_network
+    depends_on:
+      - prometheus
 
 # Network Configuration
 networks:

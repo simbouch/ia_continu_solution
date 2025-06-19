@@ -26,7 +26,7 @@ from contextlib import asynccontextmanager
 from src.monitoring.prometheus_metrics import get_prometheus_metrics
 
 # Import advanced logging
-from src.utils.logger import get_logger, setup_logging
+from src.utils.logger import setup_logging
 
 # Import authentication
 from src.auth.auth_service import (
@@ -41,9 +41,16 @@ from src.database.prediction_logger import get_prediction_logger
 logs_dir = Path("logs")
 logs_dir.mkdir(exist_ok=True)
 
-# Initialize Loguru logger
-app_logger = setup_logging("ia_continu_api")
-logger = app_logger.get_logger("api")
+# Initialize simple logging
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("ia_continu_api")
+
+# Initialize Loguru logger for advanced features
+try:
+    app_logger = setup_logging("ia_continu_api")
+except:
+    app_logger = None
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -253,10 +260,11 @@ def register(user_data: UserCreate, current_user: User = Depends(get_admin_user)
     try:
         auth_service = get_auth_service()
         new_user = auth_service.create_user(user_data)
-        app_logger.log_system_event(
-            f"User created: {new_user.username} by {current_user.username}",
-            {"new_user_id": new_user.id, "created_by": current_user.id}
-        )
+        if app_logger:
+            app_logger.log_system_event(
+                f"User created: {new_user.username} by {current_user.username}",
+                {"new_user_id": new_user.id, "created_by": current_user.id}
+            )
         return new_user
     except Exception as e:
         logger.error(f"User registration failed: {e}")
@@ -268,10 +276,11 @@ def login(login_data: UserLogin):
     try:
         auth_service = get_auth_service()
         token_response = auth_service.login(login_data)
-        app_logger.log_system_event(
-            f"User logged in: {login_data.username}",
-            {"user_id": token_response.user_id}
-        )
+        if app_logger:
+            app_logger.log_system_event(
+                f"User logged in: {login_data.username}",
+                {"user_id": token_response.user_id}
+            )
         return token_response
     except Exception as e:
         logger.error(f"Login failed for {login_data.username}: {e}")
@@ -417,12 +426,13 @@ def predict(request: PredictRequest, current_user: User = Depends(get_current_us
         response_time_ms = (time.time() - start_time) * 1000
 
         # Logs avancés avec Loguru
-        app_logger.log_prediction(
-            model_version=current_model_version,
-            features=request.features,
-            prediction=prediction,
-            confidence=confidence
-        )
+        if app_logger:
+            app_logger.log_prediction(
+                model_version=current_model_version,
+                features=request.features,
+                prediction=prediction,
+                confidence=confidence
+            )
 
         # Enregistrer dans la base de données
         pred_logger.log_prediction(
@@ -464,7 +474,7 @@ def train_default_model():
     model.fit(X, y)
     
     current_model = model
-    current_model_version = f"default_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    current_model_version = f"v1.0.0-default_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
     # Save model
     model_path = models_dir / f"model_{current_model_version}.joblib"

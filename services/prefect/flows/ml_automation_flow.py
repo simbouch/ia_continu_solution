@@ -8,13 +8,10 @@ import os
 import random
 import time
 import requests
-import logging
 import numpy as np
 from pathlib import Path
 from datetime import datetime, timezone
 from prefect import flow, task, get_run_logger
-from prefect.blocks.system import Secret
-from typing import Dict, Any, Optional
 
 # Configuration
 API_URL = os.getenv("API_URL", "http://api:8000")
@@ -97,7 +94,7 @@ def check_api_health() -> bool:
         return False
 
 @task(retries=2, retry_delay_seconds=1)
-def authenticate_api() -> Optional[str]:
+def authenticate_api():
     """Authenticate with API and return JWT token"""
     logger = get_run_logger()
     
@@ -120,7 +117,7 @@ def authenticate_api() -> Optional[str]:
         return None
 
 @task(retries=2, retry_delay_seconds=1)
-def detect_model_drift() -> Dict[str, Any]:
+def detect_model_drift():
     """Advanced model drift detection using multiple methods"""
     logger = get_run_logger()
     
@@ -186,7 +183,7 @@ def detect_model_drift() -> Dict[str, Any]:
         }
 
 @task(retries=2, retry_delay_seconds=5)
-def automated_model_retraining(drift_info: Dict[str, Any]) -> Dict[str, Any]:
+def automated_model_retraining(drift_info):
     """Automated model retraining triggered by drift detection"""
     logger = get_run_logger()
     
@@ -276,7 +273,7 @@ def automated_model_retraining(drift_info: Dict[str, Any]) -> Dict[str, Any]:
         }
 
 @task
-def monitor_system_health() -> Dict[str, Any]:
+def monitor_system_health():
     """Monitor overall system health and send alerts if needed"""
     logger = get_run_logger()
     
@@ -367,22 +364,52 @@ if __name__ == "__main__":
     # Wait for services to be ready
     print("🔄 Waiting for services to be ready...")
     time.sleep(30)
-    
+
     # Send startup notification
     send_discord_notification(
-        "🚀 **ML Automation Pipeline Started**\n\n"
-        "• Professional Architecture: Day 4\n"
-        "• Automated Drift Detection: Enabled\n"
-        "• Automated Retraining: Enabled\n"
-        "• Check Interval: 30 seconds\n"
+        "🚀 **ML Automation Pipeline Started**\\n\\n"
+        "• Professional Architecture: Day 4\\n"
+        "• Automated Drift Detection: Enabled\\n"
+        "• Automated Retraining: Enabled\\n"
+        "• Check Interval: 30 seconds\\n"
         "• Enhanced Discord Notifications: Active",
-        "Succès",
-        "🎯 System Startup"
+        "Succès"
     )
-    
-    # Start the automated pipeline
-    ml_automation_pipeline.serve(
-        name="ml-automation-every-30s",
-        interval=30,
-        tags=["ml", "automation", "drift-detection", "day4"]
-    )
+
+    # Start the automated pipeline with proper Prefect 2.x deployment
+    from prefect.deployments import Deployment
+    from prefect.server.schemas.schedules import IntervalSchedule
+    from datetime import timedelta
+
+    try:
+        # Create deployment with interval schedule
+        deployment = Deployment.build_from_flow(
+            flow=ml_automation_pipeline,
+            name="ml-automation-every-30s",
+            schedule=IntervalSchedule(interval=timedelta(seconds=30)),
+            tags=["ml", "automation", "drift-detection", "day4"]
+        )
+
+        # Apply deployment
+        deployment.apply()
+        print("✅ Prefect deployment created successfully")
+
+        # Keep the script running
+        while True:
+            time.sleep(60)
+            print("🔄 Prefect automation running...")
+
+    except Exception as e:
+        print(f"❌ Prefect deployment failed: {e}")
+        print("🔄 Falling back to simple loop...")
+
+        # Fallback to simple loop
+        while True:
+            try:
+                result = ml_automation_pipeline()
+                print(f"Pipeline completed: {result}")
+            except Exception as e:
+                print(f"Pipeline error: {e}")
+
+            # Wait 30 seconds before next run
+            time.sleep(30)
