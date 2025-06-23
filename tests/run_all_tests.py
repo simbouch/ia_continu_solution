@@ -126,7 +126,7 @@ def run_all_tests():
     print("📊 TEST SUMMARY")
     print("=" * 60)
 
-    for test_name, success, output in results:
+    for test_name, success, _output in results:
         status = "✅ PASSED" if success else "❌ FAILED"
         print(f"{test_name:20} {status}")
 

@@ -5,6 +5,7 @@ Script d'initialisation de la base de données avec Alembic
 """
 
 from pathlib import Path
+import random
 import subprocess
 import sys
 
@@ -72,7 +73,7 @@ def create_sample_data():
         db_manager = DatabaseManager()
 
         # Générer quelques échantillons
-        import random
+
 
 
         generation_id = 1

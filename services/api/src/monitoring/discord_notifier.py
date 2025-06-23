@@ -123,7 +123,7 @@ class DiscordNotifier:
             emoji = "⚠️"
         else:
             status = "Info"
-            emoji = "ℹ️"
+            emoji = "i"
 
         message = f"{emoji} {alert_type.title()} Alert\n{details}"
         return self.send_notification(message, status)

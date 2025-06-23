@@ -5,6 +5,7 @@ Interface utilisateur pour tester l'API avec authentification
 """
 
 import os
+import random
 
 import pandas as pd
 import plotly.express as px
@@ -267,7 +268,7 @@ def prediction_interface():
         )
 
         if st.button("🎲 Générer prédictions aléatoires"):
-            import random
+
 
             predictions_data = []
 
@@ -410,14 +411,14 @@ def monitoring_dashboard():
         for i, (name, url) in enumerate(services.items()):
             with cols[i]:
                 try:
-                    import requests
+
 
                     response = requests.get(url, timeout=3)
                     if response.status_code == 200:
                         st.success(f"{name}\n✅ Online")
                     else:
                         st.error(f"{name}\n❌ Error {response.status_code}")
-                except:
+                except Exception:
                     st.error(f"{name}\n❌ Offline")
 
     st.markdown("""

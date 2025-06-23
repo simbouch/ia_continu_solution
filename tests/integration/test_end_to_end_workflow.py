@@ -2,6 +2,7 @@
 End-to-end integration tests for complete ML workflow
 """
 
+import concurrent.futures
 import time
 
 import pytest
@@ -83,7 +84,7 @@ class TestEndToEndWorkflow:
 
     def test_data_persistence_across_requests(self, auth_headers):
         """Test that data persists across multiple requests"""
-        import time
+
 
         time.sleep(1.0)  # Prevent database race conditions
 
@@ -138,7 +139,7 @@ class TestEndToEndWorkflow:
 
     def test_concurrent_requests_handling(self, auth_headers):
         """Test system handling of concurrent requests"""
-        import concurrent.futures
+
 
         def make_prediction(features):
             return requests.post(

@@ -3,21 +3,25 @@ Deploy Prefect flows for IA Continu Solution
 """
 
 import asyncio
+from datetime import timedelta
 from pathlib import Path
 import sys
+
+from prefect.deployments import Deployment
+from prefect.server.schemas.schedules import IntervalSchedule
 
 # Add the flows directory to the path
 flows_dir = Path(__file__).parent / "flows"
 sys.path.insert(0, str(flows_dir))
 
-from datetime import timedelta
-
-from data_generation_flow import data_generation_workflow
-
-# Import the flows
-from ml_monitoring_flow import ml_monitoring_workflow
-from prefect.deployments import Deployment
-from prefect.server.schemas.schedules import IntervalSchedule
+# Import the flows - must be after path modification
+try:
+    from data_generation_flow import data_generation_workflow
+    from ml_monitoring_flow import ml_monitoring_workflow
+except ImportError as e:
+    print(f"Warning: Could not import flows: {e}")
+    data_generation_workflow = None
+    ml_monitoring_workflow = None
 
 
 async def deploy_flows():

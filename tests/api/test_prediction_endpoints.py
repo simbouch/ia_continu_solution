@@ -2,6 +2,9 @@
 Test suite for ML prediction endpoints
 """
 
+import random
+import time
+
 import requests
 
 from tests.conftest import API_BASE_URL
@@ -120,7 +123,7 @@ class TestPredictionEndpoints:
         self, auth_headers, sample_prediction_data
     ):
         """Test that prediction responds within acceptable time"""
-        import time
+
 
         start_time = time.time()
         response = requests.post(
@@ -187,8 +190,7 @@ class TestPredictionEndpoints:
 
     def test_generate_endpoint_creates_correct_number_of_samples(self, auth_headers):
         """Test that data generation creates the requested number of samples"""
-        import random
-        import time
+
 
         time.sleep(1.0)  # Longer delay to prevent race conditions
         generation_id = random.randint(10000, 99999)  # Use random generation_id

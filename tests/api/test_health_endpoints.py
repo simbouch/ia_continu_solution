@@ -2,6 +2,8 @@
 Test suite for API health endpoints
 """
 
+import time
+
 import requests
 
 from tests.conftest import API_BASE_URL
@@ -46,7 +48,7 @@ class TestHealthEndpoints:
 
     def test_api_health_check_response_time_under_threshold(self):
         """Test that health check responds within acceptable time"""
-        import time
+
 
         start_time = time.time()
         response = requests.get(f"{API_BASE_URL}/health", timeout=10)
