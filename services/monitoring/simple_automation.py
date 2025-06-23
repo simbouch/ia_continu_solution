@@ -47,7 +47,7 @@ def send_discord_notification(
                     },
                     {"name": "Service", "value": "ML Automation", "inline": True},
                 ],
-                "footer": {"text": "IA Continu Solution - Jour 4"},
+                "footer": {"text": "IA Continu Solution - Enterprise Template"},
             }
         ]
     }
@@ -207,12 +207,12 @@ def run_automation_cycle(cycle_count=0):
 
 
 if __name__ == "__main__":
-    print("🚀 Starting Enhanced ML Automation - Jour 4")
+    print("🚀 Starting Enhanced ML Automation - Enterprise Template")
 
     # Send startup notification
     send_discord_notification(
         "🚀 **ML Automation System Started**\\n\\n"
-        "• **Architecture:** Professional Day 4 Implementation\\n"
+        "• **Architecture:** Enterprise Template Implementation\\n"
         "• **Monitoring:** Drift detection every 30 seconds\\n"
         "• **Notifications:** Enhanced Discord integration\\n"
         "• **Features:**\\n"

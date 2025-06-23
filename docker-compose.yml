@@ -54,28 +54,29 @@ services:
       retries: 3
       start_period: 60s
 
-  # Prefect Server (Orchestration)
-  prefect-server:
-    image: prefecthq/prefect:2.14.21-python3.11
-    command: prefect server start --host 0.0.0.0
-    container_name: ia_continu_prefect_server
+  # Flow Dashboard (Alternative to Prefect)
+  flow-dashboard:
+    image: python:3.11-slim
+    container_name: ia_continu_flow_dashboard
     ports:
       - "4200:4200"
     volumes:
+      - ./services/monitoring/flow_dashboard.py:/app/dashboard.py
       - ./logs:/app/logs
-    environment:
-      - PREFECT_SERVER_API_HOST=0.0.0.0
-      - PREFECT_SERVER_API_PORT=4200
-      - PREFECT_API_URL=http://localhost:4200/api
+    command: >
+      bash -c "
+        pip install flask &&
+        python /app/dashboard.py
+      "
     restart: unless-stopped
     networks:
       - ia_continu_network
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:4200/api/ready || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:4200/ || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 30s
 
   # Simple ML Automation (Alternative to Prefect)
   ml-automation:
@@ -95,6 +96,27 @@ services:
       bash -c "
         pip install requests &&
         python /app/automation.py
+      "
+    restart: unless-stopped
+    networks:
+      - ia_continu_network
+
+  # Metrics Generator for Enhanced Monitoring
+  metrics-generator:
+    image: python:3.11-slim
+    container_name: ia_continu_metrics_generator
+    depends_on:
+      - api
+      - prometheus
+    environment:
+      - API_URL=http://api:8000
+    volumes:
+      - ./services/monitoring/metrics_generator.py:/app/metrics.py
+      - ./logs:/app/logs
+    command: >
+      bash -c "
+        pip install requests &&
+        python /app/metrics.py
       "
     restart: unless-stopped
     networks:

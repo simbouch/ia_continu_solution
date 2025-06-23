@@ -1,16 +1,16 @@
 # 🤖 IA Continu Solution - Enterprise ML Template
 
-[![Professional Architecture](https://img.shields.io/badge/Architecture-Professional-blue.svg)](https://github.com/simbouch/ia_continu_solution)
-[![Automation](https://img.shields.io/badge/Automation-Full-green.svg)](https://github.com/simbouch/ia_continu_solution)
-[![Template Ready](https://img.shields.io/badge/Template-Ready-orange.svg)](https://github.com/simbouch/ia_continu_solution)
+[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Ruff%20%2B%20Pytest-green.svg)](https://github.com/simbouch/ia_continu_solution)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://github.com/simbouch/ia_continu_solution)
+[![Template Ready](https://img.shields.io/badge/Template-Production%20Ready-orange.svg)](https://github.com/simbouch/ia_continu_solution)
 [![Enterprise Grade](https://img.shields.io/badge/Quality-Enterprise-purple.svg)](https://github.com/simbouch/ia_continu_solution)
 
 ## 🎯 Overview
 
-**IA Continu Solution** est un template professionnel de pipeline ML avec automation complète, monitoring avancé et intégration Discord. Construit avec une architecture microservices moderne et conçu pour déploiement immédiat et réutilisation sur multiples projets.
+**IA Continu Solution** is a production-ready ML template with complete automation, advanced monitoring, and Discord integration. Built with modern microservices architecture and designed for immediate deployment and reuse across multiple projects.
 
-### **🏆 Template Chef d'Œuvre Complet**
-Ce projet représente **4 jours de développement intensif** suivant une approche agile, avec documentation complète de chaque étape d'implémentation. Parfait comme base pour vos projets ML professionnels.
+### **🏆 Complete Enterprise Template**
+This template provides a comprehensive foundation for ML projects with professional architecture, automated CI/CD, and complete monitoring stack. Perfect as a base for your professional ML projects.
 
 ### **🚀 Key Features**
 - 🏗️ **Professional Microservices**: 5 independent services with dedicated containers
@@ -58,8 +58,8 @@ docker-compose ps
 ### **4. Validate**
 ```bash
 # Run comprehensive tests
-python test_global.py
-# Expected: 8/9 tests passing (88.9% success rate)
+python tests/run_all_tests.py
+# Expected: All tests passing (100% success rate)
 ```
 
 ---
@@ -190,16 +190,10 @@ curl -X POST "http://localhost:8000/predict" \
 - **[Documentation API](docs/api-documentation.md)**: Référence API complète avec exemples
 - **[Guide Dépannage](docs/troubleshooting-guide.md)**: Problèmes courants et solutions
 
-### **📋 Rapports d'Implémentation par Jour**
-- **[Jour 1: Pipeline ML](docs/jour1-implementation-report.md)**: Implémentation infrastructure ML de base
-- **[Jour 2: Monitoring](docs/jour2-monitoring-integration.md)**: Monitoring et intégration Discord
-- **[Jour 3: Validation](docs/jour3-fixes-and-validation.md)**: Corrections système et validation
-- **[Jour 4: Architecture](docs/jour4-presentation.md)**: Architecture microservices professionnelle
-
-### **📊 Documentation Technique Jour 4**
-- **[Services Techniques](docs/jour4-services-techniques.md)**: Détail implémentation services inconnus
-- **[Status Final](docs/jour4-status-final.md)**: Rapport de statut complet
-- **[Livraison Finale](docs/JOUR4-LIVRAISON-FINALE.md)**: Synthèse complète et validation
+### **📋 Template Documentation**
+- **[Setup Guide](docs/setup-guide.md)**: Complete deployment and configuration instructions
+- **[API Documentation](docs/api-documentation.md)**: Complete API reference with examples
+- **[Troubleshooting Guide](docs/troubleshooting-guide.md)**: Common issues and solutions
 
 ---
 
@@ -267,4 +261,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Built with ❤️ for the ML community. Ready to power your next ML project!  ADRIEN ET BOUCHAIB*
+*Built with ❤️ for the ML community. Ready to power your next ML project!*

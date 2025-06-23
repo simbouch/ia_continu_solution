@@ -191,9 +191,9 @@ def authenticate():
 
 def main_dashboard():
     """Dashboard principal"""
-    st.title("🤖 IA Continu Solution - Day 4 Dashboard")
+    st.title("🤖 IA Continu Solution - ML Template Dashboard")
     st.markdown(
-        "🚀 **Day 4 Implementation** - Interface complète de gestion et monitoring du pipeline ML"
+        "🚀 **Enterprise ML Template** - Complete ML pipeline management and monitoring interface"
     )
 
     # Vérifier la santé de l'API
@@ -327,16 +327,16 @@ def model_management():
 
     st.subheader("Actions sur le modèle")
 
-    st.info("🤖 **Retraining is now automated via Prefect workflows**")
+    st.info("🤖 **Retraining is now automated via ML workflows**")
     st.markdown("""
-    The model retraining is handled automatically by Prefect workflows that run every 30 seconds.
+    The model retraining is handled automatically by ML automation workflows that run every 30 seconds.
     These workflows:
     - Monitor model performance
     - Detect data drift
     - Automatically retrain when needed
     - Send Discord notifications
 
-    **Prefect Dashboard**: [http://localhost:4200](http://localhost:4200)
+    **Flow Dashboard**: [http://localhost:4200](http://localhost:4200)
     """)
 
 
@@ -391,7 +391,7 @@ def dataset_management():
 
 def monitoring_dashboard():
     """Dashboard de monitoring"""
-    st.header("📈 Monitoring - Day 4")
+    st.header("📈 Enterprise Monitoring Dashboard")
 
     # Check service status in real-time
     st.subheader("🔍 Service Status Check")
@@ -399,7 +399,7 @@ def monitoring_dashboard():
     services = {
         "🔬 MLflow": "http://localhost:5000/",
         "📡 Uptime Kuma": "http://localhost:3001/",
-        "⚡ Prefect": "http://localhost:4200/api/ready",
+        "⚡ Flow Dashboard": "http://localhost:4200/",
         "🔍 Prometheus": "http://localhost:9090/",
         "📊 Grafana": "http://localhost:3000/",
     }
@@ -418,14 +418,14 @@ def monitoring_dashboard():
                     st.error(f"{name}\n❌ Offline")
 
     st.markdown("""
-    ### 🔗 Monitoring Services
+    ### 🔗 Enterprise Monitoring Services
 
-    #### ✅ Working Services:
+    #### ✅ Core Services:
     - 🔬 **MLflow**: [http://localhost:5000](http://localhost:5000) - ML Experiment Tracking
     - 📡 **Uptime Kuma**: [http://localhost:3001](http://localhost:3001) - Service Monitoring
+    - ⚡ **Flow Dashboard**: [http://localhost:4200](http://localhost:4200) - Workflow Monitoring
 
-    #### ⚠️ Additional Services (Optional):
-    - ⚡ **Prefect**: [http://localhost:4200](http://localhost:4200) - Workflow Orchestration
+    #### 📊 Advanced Monitoring:
     - 🔍 **Prometheus**: [http://localhost:9090](http://localhost:9090) - Metrics Collection
     - 📊 **Grafana**: [http://localhost:3000](http://localhost:3000) - Dashboards (admin/admin123)
     """)
@@ -491,22 +491,22 @@ def main():
     if not authenticate():
         st.warning("🔐 Veuillez vous authentifier pour accéder au dashboard")
         st.markdown("""
-        ### 🔑 Connexion Requise - Day 4 Implementation
+        ### 🔑 Authentication Required - Enterprise ML Template
 
-        Pour accéder au dashboard IA Continu Solution, veuillez vous connecter avec vos identifiants :
+        To access the IA Continu Solution dashboard, please login with your credentials:
 
-        #### Comptes de test disponibles :
-        - **Utilisateur standard** : `testuser` / `test123`
-        - **Administrateur** : `admin` / `admin123`
+        #### Available test accounts:
+        - **Standard User** : `testuser` / `test123`
+        - **Administrator** : `admin` / `admin123`
 
-        Utilisez le mode "Username/Password" dans la barre latérale pour vous connecter.
+        Use the "Username/Password" mode in the sidebar to connect.
 
         ---
-        **Day 4 Features:**
-        - ✅ Authentication sécurisée
-        - ✅ Interface ML complète
-        - ✅ Monitoring intégré
-        - ✅ Pipeline automatisé
+        **Template Features:**
+        - ✅ Secure JWT authentication
+        - ✅ Complete ML interface
+        - ✅ Integrated monitoring
+        - ✅ Automated pipeline
         """)
         return
 
@@ -515,7 +515,7 @@ def main():
 
     # Footer
     st.sidebar.markdown("---")
-    st.sidebar.markdown("**IA Continu Solution v4.0 - Day 4**")
+    st.sidebar.markdown("**IA Continu Solution - Enterprise Template**")
     st.sidebar.markdown("🚀 Production Ready - ML Pipeline & Monitoring")
 
 
