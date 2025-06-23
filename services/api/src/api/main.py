@@ -4,23 +4,36 @@ IA Continu Solution - Main API Service
 FastAPI application with ML pipeline endpoints, MLflow integration, and Discord notifications
 """
 
-from fastapi import FastAPI, HTTPException, Request, Response, Depends
+from datetime import UTC, datetime
+import logging
+import os
+from pathlib import Path
+import random
+import sqlite3
+import time
+
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List
+import joblib
 import numpy as np
+from pydantic import BaseModel, Field
+import requests
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-import sqlite3
-import joblib
-import mlflow
-import mlflow.sklearn
-from datetime import datetime, timezone
-import os
-import requests
-import time
-from pathlib import Path
-from contextlib import asynccontextmanager
+
+# Import authentication
+from src.auth.auth_service import (
+    TokenResponse,
+    User,
+    UserCreate,
+    UserLogin,
+    get_admin_user,
+    get_auth_service,
+    get_current_user,
+)
+
+# Import prediction logging
+from src.database.prediction_logger import get_prediction_logger
 
 # Import monitoring
 from src.monitoring.prometheus_metrics import get_prometheus_metrics
@@ -28,35 +41,25 @@ from src.monitoring.prometheus_metrics import get_prometheus_metrics
 # Import advanced logging
 from src.utils.logger import setup_logging
 
-# Import authentication
-from src.auth.auth_service import (
-    get_auth_service, get_current_user, get_admin_user,
-    UserCreate, UserLogin, TokenResponse, User
-)
-
-# Import prediction logging
-from src.database.prediction_logger import get_prediction_logger
-
 # Configure advanced logging with Loguru
 logs_dir = Path("logs")
 logs_dir.mkdir(exist_ok=True)
 
-# Initialize simple logging
-import logging
+# Initialize basic logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ia_continu_api")
 
 # Initialize Loguru logger for advanced features
 try:
     app_logger = setup_logging("ia_continu_api")
-except:
+except Exception:
     app_logger = None
 
 # Initialize FastAPI app
 app = FastAPI(
     title="IA Continu Solution - Day 3",
     description="ML API with monitoring, CI/CD, and advanced features",
-    version="3.0.0"
+    version="3.0.0",
 )
 
 # CORS middleware
@@ -74,6 +77,7 @@ metrics = get_prometheus_metrics()
 # Prediction logger instance
 pred_logger = get_prediction_logger()
 
+
 # Middleware pour les métriques
 @app.middleware("http")
 async def metrics_middleware(request: Request, call_next):
@@ -90,12 +94,13 @@ async def metrics_middleware(request: Request, call_next):
             method=request.method,
             endpoint=request.url.path,
             status_code=response.status_code,
-            duration=duration
+            duration=duration,
         )
 
         return response
     finally:
         metrics.decrement_active_requests()
+
 
 # Global variables
 current_model = None
@@ -111,42 +116,42 @@ DATABASE_PATH = "data/ia_continu_solution.db"
 # Discord webhook configuration
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
+
 def send_discord_notification(message: str, status: str = "Succès") -> bool:
     """Send notification to Discord webhook with Day 1 format"""
     if not DISCORD_WEBHOOK_URL:
         logger.info(f"Discord webhook not configured. Message: {message}")
         return False
-    
+
     # Color mapping
     color_map = {
-        "Succès": 5814783,    # Green
-        "Échec": 15158332,    # Red
+        "Succès": 5814783,  # Green
+        "Échec": 15158332,  # Red
         "Avertissement": 16776960,  # Yellow
-        "Info": 3447003       # Blue
+        "Info": 3447003,  # Blue
     }
-    
+
     color = color_map.get(status, 3447003)
-    
+
     data = {
-        "embeds": [{
-            "title": "Résultats du pipeline",
-            "description": message,
-            "color": color,
-            "fields": [{
-                "name": "Status",
-                "value": status,
-                "inline": True
-            }, {
-                "name": "Timestamp",
-                "value": datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
-                "inline": True
-            }],
-            "footer": {
-                "text": "IA Continu Solution - Day 2"
+        "embeds": [
+            {
+                "title": "Résultats du pipeline",
+                "description": message,
+                "color": color,
+                "fields": [
+                    {"name": "Status", "value": status, "inline": True},
+                    {
+                        "name": "Timestamp",
+                        "value": datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                        "inline": True,
+                    },
+                ],
+                "footer": {"text": "IA Continu Solution - Day 2"},
             }
-        }]
+        ]
     }
-    
+
     try:
         response = requests.post(DISCORD_WEBHOOK_URL, json=data, timeout=10)
         if response.status_code == 204:
@@ -159,6 +164,7 @@ def send_discord_notification(message: str, status: str = "Succès") -> bool:
         logger.error(f"❌ Discord notification error: {e}")
         return False
 
+
 def get_db_connection():
     """Get database connection with proper configuration"""
     conn = sqlite3.connect(DATABASE_PATH, timeout=60.0)
@@ -168,12 +174,13 @@ def get_db_connection():
     conn.execute("PRAGMA wal_autocheckpoint=1000")
     return conn
 
+
 def init_database():
     """Initialize SQLite database"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
+
         # Create datasets table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS datasets (
@@ -184,7 +191,7 @@ def init_database():
                 hour_generated INTEGER
             )
         """)
-        
+
         # Create dataset_samples table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS dataset_samples (
@@ -196,7 +203,7 @@ def init_database():
                 FOREIGN KEY (generation_id) REFERENCES datasets (generation_id)
             )
         """)
-        
+
         # Create models table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS models (
@@ -208,7 +215,7 @@ def init_database():
                 is_active BOOLEAN DEFAULT FALSE
             )
         """)
-        
+
         conn.commit()
         conn.close()
         logger.info("Database initialized successfully")
@@ -217,20 +224,25 @@ def init_database():
         logger.error(f"Database initialization failed: {e}")
         return False
 
+
 # Initialize database on startup
 init_database()
+
 
 # Pydantic models
 class GenerateRequest(BaseModel):
     samples: int = Field(default=1000, ge=100, le=10000)
+
 
 class GenerateResponse(BaseModel):
     generation_id: int
     samples_created: int
     timestamp: str
 
+
 class PredictRequest(BaseModel):
-    features: List[float] = Field(..., min_items=2, max_items=2)
+    features: list[float] = Field(..., min_items=2, max_items=2)
+
 
 class PredictResponse(BaseModel):
     prediction: int
@@ -238,20 +250,24 @@ class PredictResponse(BaseModel):
     confidence: float
     timestamp: str
 
+
 # REMOVED: Retrain-related models - Day 4 Professional Architecture
 # All retraining is now handled by Prefect automation workflows
 
 # Routes
+
 
 @app.get("/")
 def root():
     """Root endpoint"""
     return {"message": "IA Continu Solution - Day 3 API", "version": "3.0.0"}
 
+
 @app.get("/metrics")
 def get_metrics():
     """Endpoint pour les métriques Prometheus"""
     return metrics.get_metrics()
+
 
 # Routes d'authentification
 @app.post("/auth/register", response_model=User)
@@ -263,12 +279,13 @@ def register(user_data: UserCreate, current_user: User = Depends(get_admin_user)
         if app_logger:
             app_logger.log_system_event(
                 f"User created: {new_user.username} by {current_user.username}",
-                {"new_user_id": new_user.id, "created_by": current_user.id}
+                {"new_user_id": new_user.id, "created_by": current_user.id},
             )
         return new_user
     except Exception as e:
         logger.error(f"User registration failed: {e}")
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.post("/auth/login", response_model=TokenResponse)
 def login(login_data: UserLogin):
@@ -279,17 +296,19 @@ def login(login_data: UserLogin):
         if app_logger:
             app_logger.log_system_event(
                 f"User logged in: {login_data.username}",
-                {"user_id": token_response.user_id}
+                {"user_id": token_response.user_id},
             )
         return token_response
     except Exception as e:
         logger.error(f"Login failed for {login_data.username}: {e}")
         raise
 
+
 @app.get("/auth/me", response_model=User)
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     """Obtenir les informations de l'utilisateur actuel"""
     return current_user
+
 
 @app.get("/auth/users", response_model=list[User])
 def list_users(current_user: User = Depends(get_admin_user)):
@@ -297,18 +316,25 @@ def list_users(current_user: User = Depends(get_admin_user)):
     # Cette route sera implémentée dans auth_service si nécessaire
     return []
 
+
 # Routes pour l'historique et les statistiques
 @app.get("/predictions/history")
-def get_prediction_history(limit: int = 100, current_user: User = Depends(get_current_user)):
+def get_prediction_history(
+    limit: int = 100, current_user: User = Depends(get_current_user)
+):
     """Obtenir l'historique des prédictions de l'utilisateur"""
     history = pred_logger.get_prediction_history(limit=limit, user_id=current_user.id)
     return {"predictions": history, "total": len(history)}
 
+
 @app.get("/predictions/history/all")
-def get_all_prediction_history(limit: int = 100, current_user: User = Depends(get_admin_user)):
+def get_all_prediction_history(
+    limit: int = 100, current_user: User = Depends(get_admin_user)
+):
     """Obtenir l'historique de toutes les prédictions (admin seulement)"""
     history = pred_logger.get_prediction_history(limit=limit)
     return {"predictions": history, "total": len(history)}
+
 
 @app.get("/predictions/stats")
 def get_prediction_stats(current_user: User = Depends(get_current_user)):
@@ -316,11 +342,15 @@ def get_prediction_stats(current_user: User = Depends(get_current_user)):
     stats = pred_logger.get_prediction_stats()
     return stats
 
+
 @app.get("/training/history")
-def get_training_history(limit: int = 50, current_user: User = Depends(get_current_user)):
+def get_training_history(
+    limit: int = 50, current_user: User = Depends(get_current_user)
+):
     """Obtenir l'historique des entraînements"""
     history = pred_logger.get_training_history(limit=limit)
     return {"trainings": history, "total": len(history)}
+
 
 @app.get("/drift/history")
 def get_drift_history(limit: int = 50, current_user: User = Depends(get_current_user)):
@@ -328,78 +358,94 @@ def get_drift_history(limit: int = 50, current_user: User = Depends(get_current_
     history = pred_logger.get_drift_detections(limit=limit)
     return {"drift_detections": history, "total": len(history)}
 
+
 @app.get("/logs/system")
-def get_system_logs(limit: int = 100, level: str = None, component: str = None,
-                   current_user: User = Depends(get_admin_user)):
+def get_system_logs(
+    limit: int = 100,
+    level: str | None = None,
+    component: str | None = None,
+    current_user: User = Depends(get_admin_user),
+):
     """Obtenir les logs système (admin seulement)"""
     logs = pred_logger.get_system_logs(limit=limit, level=level, component=component)
     return {"logs": logs, "total": len(logs)}
+
 
 @app.get("/health")
 def health_check():
     """Health check endpoint - returns 200 OK"""
     return {
         "status": "ok",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "version": "2.0.0"
+        "timestamp": datetime.now(UTC).isoformat(),
+        "version": "2.0.0",
     }
 
+
 @app.post("/generate", response_model=GenerateResponse)
-def generate_dataset(request: GenerateRequest, current_user: User = Depends(get_current_user)):
+def generate_dataset(
+    request: GenerateRequest, current_user: User = Depends(get_current_user)
+):
     """Generate synthetic dataset with time-based modifications"""
     try:
         logger.info(f"Generating {request.samples} samples")
-        
+
         # Generate base features
         np.random.seed(int(datetime.now().timestamp()) % 1000)
         feature1 = np.random.normal(0, 1, request.samples)
         feature2 = np.random.normal(0, 1, request.samples)
-        
+
         # Apply time-based modification
         current_hour = datetime.now().hour
         if current_hour % 2 == 1:
             feature1 = feature1 - 0.5
             logger.info(f"Applied time-based modification (hour {current_hour} is odd)")
-        
+
         # Create binary target based on linear combination
         linear_combination = 0.5 * feature1 + 0.3 * feature2
         target = (linear_combination > 0).astype(int)
-        
+
         # Store in database
-        generation_id = int(datetime.now().timestamp())
-        
+        generation_id = int(datetime.now().timestamp() * 1000) + random.randint(1, 999)
+
         conn = get_db_connection()
         cursor = conn.cursor()
-        
+
         # Insert dataset metadata
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO datasets (generation_id, samples_count, hour_generated)
             VALUES (?, ?, ?)
-        """, (generation_id, request.samples, current_hour))
-        
+        """,
+            (generation_id, request.samples, current_hour),
+        )
+
         # Insert samples
         for i in range(request.samples):
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO dataset_samples (generation_id, feature1, feature2, target)
                 VALUES (?, ?, ?, ?)
-            """, (generation_id, float(feature1[i]), float(feature2[i]), int(target[i])))
-        
+            """,
+                (generation_id, float(feature1[i]), float(feature2[i]), int(target[i])),
+            )
+
         conn.commit()
         conn.close()
-        
-        timestamp = datetime.now(timezone.utc).isoformat()
-        
+
+        timestamp = datetime.now(UTC).isoformat()
+
         logger.info(f"Generated dataset with ID: {generation_id}")
-        
+
         return GenerateResponse(
             generation_id=generation_id,
             samples_created=request.samples,
-            timestamp=timestamp
+            timestamp=timestamp,
         )
-        
+
     except Exception as e:
         logger.error(f"Dataset generation failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Dataset generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Dataset generation failed: {e!s}")
+
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest, current_user: User = Depends(get_current_user)):
@@ -416,7 +462,7 @@ def predict(request: PredictRequest, current_user: User = Depends(get_current_us
         prediction = current_model.predict(features)[0]
 
         # Get prediction probability for confidence
-        if hasattr(current_model, 'predict_proba'):
+        if hasattr(current_model, "predict_proba"):
             probabilities = current_model.predict_proba(features)[0]
             confidence = float(max(probabilities))
         else:
@@ -431,7 +477,7 @@ def predict(request: PredictRequest, current_user: User = Depends(get_current_us
                 model_version=current_model_version,
                 features=request.features,
                 prediction=prediction,
-                confidence=confidence
+                confidence=confidence,
             )
 
         # Enregistrer dans la base de données
@@ -442,7 +488,7 @@ def predict(request: PredictRequest, current_user: User = Depends(get_current_us
             feature2=request.features[1],
             prediction=int(prediction),
             confidence=confidence,
-            response_time_ms=response_time_ms
+            response_time_ms=response_time_ms,
         )
 
         # Enregistrer la métrique de prédiction
@@ -452,35 +498,37 @@ def predict(request: PredictRequest, current_user: User = Depends(get_current_us
             prediction=int(prediction),
             model_version=current_model_version,
             confidence=confidence,
-            timestamp=datetime.now(timezone.utc).isoformat()
+            timestamp=datetime.now(UTC).isoformat(),
         )
 
     except Exception as e:
         logger.error(f"Prediction failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {e!s}")
+
 
 def train_default_model():
     """Train a default model with synthetic data"""
     global current_model, current_model_version
-    
+
     logger.info("Training default model")
-    
+
     # Generate small synthetic dataset
     X = np.random.normal(0, 1, (100, 2))
     y = (0.5 * X[:, 0] + 0.3 * X[:, 1] > 0).astype(int)
-    
+
     # Train logistic regression
     model = LogisticRegression(random_state=42)
     model.fit(X, y)
-    
+
     current_model = model
     current_model_version = f"v1.0.0-default_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    
+
     # Save model
     model_path = models_dir / f"model_{current_model_version}.joblib"
     joblib.dump(model, model_path)
-    
+
     logger.info(f"Default model trained and saved: {current_model_version}")
+
 
 # REMOVED: Manual retraining endpoint - Day 4 Professional Architecture
 # All retraining is now handled by Prefect automation workflows
@@ -489,6 +537,7 @@ def train_default_model():
 # REMOVED: Conditional retraining endpoint - Day 4 Professional Architecture
 # All conditional retraining logic is now handled by Prefect automation workflows
 # This provides better orchestration, monitoring, and error handling
+
 
 def evaluate_current_model_performance() -> float:
     """Évaluer les performances du modèle actuel sur un échantillon de test"""
@@ -510,7 +559,9 @@ def evaluate_current_model_performance() -> float:
         conn.close()
 
         if len(test_samples) < 10:
-            logger.warning("Not enough test data for evaluation, returning default accuracy")
+            logger.warning(
+                "Not enough test data for evaluation, returning default accuracy"
+            )
             return 0.8  # Valeur par défaut conservatrice
 
         # Préparer les données de test
@@ -523,13 +574,16 @@ def evaluate_current_model_performance() -> float:
         # Calculer l'accuracy
         accuracy = accuracy_score(y_test, y_pred)
 
-        logger.info(f"Model evaluation completed: {accuracy:.3f} accuracy on {len(test_samples)} samples")
+        logger.info(
+            f"Model evaluation completed: {accuracy:.3f} accuracy on {len(test_samples)} samples"
+        )
 
         return accuracy
 
     except Exception as e:
         logger.error(f"Model evaluation failed: {e}")
         return 0.5  # Valeur par défaut très conservatrice en cas d'erreur
+
 
 @app.get("/model/info")
 def get_model_info():
@@ -539,8 +593,9 @@ def get_model_info():
         "model_version": current_model_version,
         "model_loaded": current_model is not None,
         "model_type": "LogisticRegression" if current_model else None,
-        "timestamp": datetime.now(timezone.utc).isoformat()
+        "timestamp": datetime.now(UTC).isoformat(),
     }
+
 
 @app.get("/datasets/list")
 def list_datasets():
@@ -556,20 +611,21 @@ def list_datasets():
 
     datasets = []
     for row in cursor.fetchall():
-        datasets.append({
-            "generation_id": row[0],
-            "samples_count": row[1],
-            "created_at": row[2],
-            "hour_generated": row[3]
-        })
+        datasets.append(
+            {
+                "generation_id": row[0],
+                "samples_count": row[1],
+                "created_at": row[2],
+                "hour_generated": row[3],
+            }
+        )
 
     conn.close()
 
-    return {
-        "datasets": datasets,
-        "total_datasets": len(datasets)
-    }
+    return {"datasets": datasets, "total_datasets": len(datasets)}
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,0 +1,125 @@
+[tool.ruff]
+# Ruff configuration for IA Continu Solution
+target-version = "py311"
+line-length = 88
+indent-width = 4
+
+# Exclude directories
+exclude = [
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+    "*.egg-info",
+    "grafana_data",
+    "prometheus_data",
+    "mlflow_data",
+    "mlruns",
+    "prefect_data",
+    "uptime_kuma_data",
+    "logs",
+]
+
+[tool.ruff.lint]
+# Enable specific rule sets
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "I",    # isort
+    "N",    # pep8-naming
+    "C90",  # mccabe complexity
+    "PL",   # Pylint
+    "RUF",  # Ruff-specific rules
+]
+
+# Ignore specific rules that might be too strict for this project
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Do not perform function calls in argument defaults
+    "PLR0913", # Too many arguments to function call
+    "PLR0915", # Too many statements
+    "N806",   # Variable in function should be lowercase
+    "PLW0603", # Global statement usage (needed for model state)
+    "PLR2004", # Magic value used in comparison
+    "B904",   # Exception chaining (can be too strict)
+]
+
+# Allow fix for all fixable rules
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with spaces, rather than tabs
+indent-style = "space"
+
+# Respect magic trailing commas
+skip-magic-trailing-comma = false
+
+# Automatically detect the appropriate line ending
+line-ending = "auto"
+
+[tool.ruff.lint.mccabe]
+# Maximum cyclomatic complexity
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+# Import sorting configuration
+known-first-party = ["src", "tests"]
+force-single-line = false
+force-sort-within-sections = true
+
+[tool.ruff.lint.pylint]
+# Pylint-specific configuration
+max-args = 8
+max-locals = 20
+max-branches = 15
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore specific rules for test files
+"tests/**/*.py" = [
+    "PLR2004",  # Magic value used in comparison
+    "S101",     # Use of assert detected
+    "PLR0913",  # Too many arguments
+]
+
+# Ignore specific rules for configuration files
+"**/config/*.py" = [
+    "F401",     # Imported but unused
+]
+
+# Ignore specific rules for __init__.py files
+"**/__init__.py" = [
+    "F401",     # Imported but unused
+]
+
+[tool.pytest.ini_options]
+# Pytest configuration
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]

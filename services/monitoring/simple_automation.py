@@ -4,52 +4,52 @@ Simple ML Automation Script - Alternative to Prefect
 Runs continuous monitoring and drift detection every 30 seconds
 """
 
+from datetime import UTC, datetime
 import os
-import time
 import random
+import time
+
 import requests
-from datetime import datetime, timezone
 
 # Configuration
 API_URL = os.getenv("API_URL", "http://api:8000")
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
-def send_discord_notification(message: str, status: str = "Succès", title: str = "🤖 ML Automation"):
+
+def send_discord_notification(
+    message: str, status: str = "Succès", title: str = "🤖 ML Automation"
+):
     """Send Discord notification with proper formatting"""
     if not DISCORD_WEBHOOK_URL:
         print(f"Discord webhook not configured. Message: {message}")
         return False
 
     color_map = {
-        "Succès": 5814783,      # Green
-        "Échec": 15158332,      # Red
+        "Succès": 5814783,  # Green
+        "Échec": 15158332,  # Red
         "Avertissement": 16776960,  # Yellow
-        "Info": 3447003,        # Blue
-        "Drift": 16753920       # Orange
+        "Info": 3447003,  # Blue
+        "Drift": 16753920,  # Orange
     }
 
     data = {
-        "embeds": [{
-            "title": title,
-            "description": message,
-            "color": color_map.get(status, 3447003),
-            "fields": [{
-                "name": "Status",
-                "value": status,
-                "inline": True
-            }, {
-                "name": "Timestamp",
-                "value": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
-                "inline": True
-            }, {
-                "name": "Service",
-                "value": "ML Automation",
-                "inline": True
-            }],
-            "footer": {
-                "text": "IA Continu Solution - Jour 4"
+        "embeds": [
+            {
+                "title": title,
+                "description": message,
+                "color": color_map.get(status, 3447003),
+                "fields": [
+                    {"name": "Status", "value": status, "inline": True},
+                    {
+                        "name": "Timestamp",
+                        "value": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC"),
+                        "inline": True,
+                    },
+                    {"name": "Service", "value": "ML Automation", "inline": True},
+                ],
+                "footer": {"text": "IA Continu Solution - Jour 4"},
             }
-        }]
+        ]
     }
 
     try:
@@ -64,28 +64,33 @@ def send_discord_notification(message: str, status: str = "Succès", title: str 
         print(f"❌ Discord error: {e}")
         return False
 
+
 def authenticate():
     """Authenticate with API"""
     try:
-        response = requests.post(f"{API_URL}/auth/login", 
-                               json={"username": "admin", "password": "admin123"}, 
-                               timeout=10)
+        response = requests.post(
+            f"{API_URL}/auth/login",
+            json={"username": "admin", "password": "admin123"},
+            timeout=10,
+        )
         if response.status_code == 200:
             return response.json()["access_token"]
     except Exception as e:
         print(f"Auth error: {e}")
     return None
 
+
 def detect_drift():
     """Simple drift detection"""
     random_value = random.random()
     drift_detected = random_value < 0.5
-    
+
     return {
         "drift_detected": drift_detected,
         "random_value": random_value,
-        "method": "random_simulation"
+        "method": "random_simulation",
     }
+
 
 def run_automation_cycle(cycle_count=0):
     """Run one automation cycle with enhanced notifications"""
@@ -102,7 +107,7 @@ def run_automation_cycle(cycle_count=0):
                 f"• Cycle: #{cycle_count}\\n"
                 f"• Action: Skipping automation cycle",
                 "Échec",
-                "🏥 Health Check Alert"
+                "🏥 Health Check Alert",
             )
             return
     except Exception as e:
@@ -113,7 +118,7 @@ def run_automation_cycle(cycle_count=0):
             f"• Cycle: #{cycle_count}\\n"
             f"• Action: Skipping automation cycle",
             "Échec",
-            "🔌 Connection Alert"
+            "🔌 Connection Alert",
         )
         return
 
@@ -130,9 +135,12 @@ def run_automation_cycle(cycle_count=0):
             headers = {"Authorization": f"Bearer {token}"}
             try:
                 # Generate new training data
-                gen_response = requests.post(f"{API_URL}/generate",
-                                           json={"samples": 100},
-                                           headers=headers, timeout=30)
+                gen_response = requests.post(
+                    f"{API_URL}/generate",
+                    json={"samples": 100},
+                    headers=headers,
+                    timeout=30,
+                )
                 if gen_response.status_code == 200:
                     print("✅ Generated new training data")
 
@@ -147,7 +155,7 @@ def run_automation_cycle(cycle_count=0):
                         f"  - Samples Created: {gen_response.json().get('samples_created', 'N/A')}\\n"
                         f"• **Cycle:** #{cycle_count}",
                         "Drift",
-                        "🔄 Drift Detection & Response"
+                        "🔄 Drift Detection & Response",
                     )
                 else:
                     print("❌ Failed to generate data")
@@ -157,7 +165,7 @@ def run_automation_cycle(cycle_count=0):
                         f"• Status Code: {gen_response.status_code}\\n"
                         f"• Cycle: #{cycle_count}",
                         "Échec",
-                        "📊 Data Generation Error"
+                        "📊 Data Generation Error",
                     )
             except Exception as e:
                 print(f"❌ Data generation error: {e}")
@@ -167,7 +175,7 @@ def run_automation_cycle(cycle_count=0):
                     f"• Details: {str(e)[:100]}\\n"
                     f"• Cycle: #{cycle_count}",
                     "Échec",
-                    "⚙️ Automation Error"
+                    "⚙️ Automation Error",
                 )
     else:
         print("✅ No drift detected")
@@ -183,7 +191,7 @@ def run_automation_cycle(cycle_count=0):
                 f"• **Uptime:** {cycle_count * 30 // 60} minutes\\n"
                 f"• **Next Check:** 30 seconds",
                 "Info",
-                "📊 Periodic Status Report"
+                "📊 Periodic Status Report",
             )
         elif cycle_count % 20 == 0 and cycle_count > 0:  # Every 20 cycles (10 minutes)
             send_discord_notification(
@@ -194,8 +202,9 @@ def run_automation_cycle(cycle_count=0):
                 f"• **Performance:** Optimal\\n"
                 f"• **Next Report:** 10 minutes",
                 "Succès",
-                "📈 Extended Status Report"
+                "📈 Extended Status Report",
             )
+
 
 if __name__ == "__main__":
     print("🚀 Starting Enhanced ML Automation - Jour 4")
@@ -213,7 +222,7 @@ if __name__ == "__main__":
         "  - Error handling & alerts\\n"
         "• **Status:** Fully operational",
         "Succès",
-        "🎯 System Startup"
+        "🎯 System Startup",
     )
 
     # Main automation loop with cycle counting
@@ -231,7 +240,7 @@ if __name__ == "__main__":
                 f"• Action: Continuing with next cycle\\n"
                 f"• System: Still operational",
                 "Échec",
-                "🚨 Critical Error Alert"
+                "🚨 Critical Error Alert",
             )
 
         print(f"⏳ Waiting 30 seconds... (Cycle #{cycle_count} completed)")

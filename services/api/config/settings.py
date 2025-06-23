@@ -6,6 +6,7 @@ Centralized configuration management
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -32,7 +33,9 @@ DATABASE_PATH = str(DATA_DIR / "ia_continu_solution.db")
 
 # MLflow Configuration
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
-MLFLOW_BACKEND_STORE_URI = os.getenv("MLFLOW_BACKEND_STORE_URI", f"sqlite:///{DATA_DIR}/mlflow.db")
+MLFLOW_BACKEND_STORE_URI = os.getenv(
+    "MLFLOW_BACKEND_STORE_URI", f"sqlite:///{DATA_DIR}/mlflow.db"
+)
 MLFLOW_EXPERIMENT_NAME = "ia_continu_solution"
 
 # Discord Configuration
@@ -60,6 +63,7 @@ LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 DEBUG = ENVIRONMENT == "development"
 
+
 def get_config():
     """Get configuration dictionary"""
     return {
@@ -67,47 +71,41 @@ def get_config():
             "host": API_HOST,
             "port": API_PORT,
             "version": API_VERSION,
-            "debug": DEBUG
+            "debug": DEBUG,
         },
-        "database": {
-            "path": DATABASE_PATH
-        },
+        "database": {"path": DATABASE_PATH},
         "mlflow": {
             "tracking_uri": MLFLOW_TRACKING_URI,
             "backend_store_uri": MLFLOW_BACKEND_STORE_URI,
-            "experiment_name": MLFLOW_EXPERIMENT_NAME
+            "experiment_name": MLFLOW_EXPERIMENT_NAME,
         },
-        "discord": {
-            "webhook_url": DISCORD_WEBHOOK_URL
-        },
+        "discord": {"webhook_url": DISCORD_WEBHOOK_URL},
         "model": {
             "type": DEFAULT_MODEL_TYPE,
             "random_state": MODEL_RANDOM_STATE,
-            "max_iter": MODEL_MAX_ITER
+            "max_iter": MODEL_MAX_ITER,
         },
         "dataset": {
             "min_samples": MIN_SAMPLES,
             "max_samples": MAX_SAMPLES,
-            "default_samples": DEFAULT_SAMPLES
+            "default_samples": DEFAULT_SAMPLES,
         },
         "monitoring": {
             "interval": MONITORING_INTERVAL,
-            "health_check_timeout": HEALTH_CHECK_TIMEOUT
+            "health_check_timeout": HEALTH_CHECK_TIMEOUT,
         },
-        "logging": {
-            "level": LOG_LEVEL,
-            "format": LOG_FORMAT
-        },
-        "environment": ENVIRONMENT
+        "logging": {"level": LOG_LEVEL, "format": LOG_FORMAT},
+        "environment": ENVIRONMENT,
     }
+
 
 def print_config():
     """Print current configuration"""
     config = get_config()
-    
+
     print("⚙️ IA Continu Solution Configuration")
     print("=" * 40)
-    
+
     for section, settings in config.items():
         print(f"\n📋 {section.upper()}:")
         for key, value in settings.items():
@@ -117,6 +115,7 @@ def print_config():
                 print(f"   {key}: {masked_value}")
             else:
                 print(f"   {key}: {value}")
+
 
 if __name__ == "__main__":
     print_config()
