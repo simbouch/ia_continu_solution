@@ -336,7 +336,7 @@ def model_management():
     - Automatically retrain when needed
     - Send Discord notifications
 
-    **Flow Dashboard**: [http://localhost:4200](http://localhost:4200)
+    **Prefect Dashboard**: [http://localhost:4200](http://localhost:4200)
     """)
 
 
@@ -399,7 +399,7 @@ def monitoring_dashboard():
     services = {
         "🔬 MLflow": "http://localhost:5000/",
         "📡 Uptime Kuma": "http://localhost:3001/",
-        "⚡ Flow Dashboard": "http://localhost:4200/",
+        "⚡ Prefect Dashboard": "http://localhost:4200/",
         "🔍 Prometheus": "http://localhost:9090/",
         "📊 Grafana": "http://localhost:3000/",
     }
@@ -423,7 +423,7 @@ def monitoring_dashboard():
     #### ✅ Core Services:
     - 🔬 **MLflow**: [http://localhost:5000](http://localhost:5000) - ML Experiment Tracking
     - 📡 **Uptime Kuma**: [http://localhost:3001](http://localhost:3001) - Service Monitoring
-    - ⚡ **Flow Dashboard**: [http://localhost:4200](http://localhost:4200) - Workflow Monitoring
+    - ⚡ **Prefect Dashboard**: [http://localhost:4200](http://localhost:4200) - ML Workflow Orchestration
 
     #### 📊 Advanced Monitoring:
     - 🔍 **Prometheus**: [http://localhost:9090](http://localhost:9090) - Metrics Collection

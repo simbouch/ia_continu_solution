@@ -54,18 +54,21 @@ services:
       retries: 3
       start_period: 60s
 
-  # Flow Dashboard (Alternative to Prefect)
-  flow-dashboard:
+  # Prefect-Style Flow Dashboard (Working Alternative)
+  prefect-server:
     image: python:3.11-slim
-    container_name: ia_continu_flow_dashboard
+    container_name: ia_continu_prefect_server
     ports:
       - "4200:4200"
     volumes:
-      - ./services/monitoring/flow_dashboard.py:/app/dashboard.py
+      - ./services/monitoring/prefect_dashboard.py:/app/dashboard.py
       - ./logs:/app/logs
+    environment:
+      - API_URL=http://api:8000
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       bash -c "
-        pip install flask &&
+        pip install --no-cache-dir flask requests &&
         python /app/dashboard.py
       "
     restart: unless-stopped
