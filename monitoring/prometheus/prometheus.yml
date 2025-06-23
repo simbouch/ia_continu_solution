@@ -14,14 +14,14 @@ scrape_configs:
   # Scrape the FastAPI application metrics
   - job_name: 'ia-continu-api'
     static_configs:
-      - targets: ['host.docker.internal:8000']
+      - targets: ['api:8000']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   # Scrape MLflow metrics if available
   - job_name: 'mlflow'
     static_configs:
-      - targets: ['host.docker.internal:5000']
+      - targets: ['mlflow:5000']
     metrics_path: '/metrics'
     scrape_interval: 30s
     scrape_timeout: 10s
@@ -29,7 +29,7 @@ scrape_configs:
   # Scrape Prefect server metrics
   - job_name: 'prefect-server'
     static_configs:
-      - targets: ['host.docker.internal:4200']
+      - targets: ['prefect_server:4200']
     metrics_path: '/api/ready'
     scrape_interval: 30s
     scrape_timeout: 10s
@@ -37,7 +37,7 @@ scrape_configs:
   # Scrape Streamlit metrics if available
   - job_name: 'streamlit'
     static_configs:
-      - targets: ['host.docker.internal:8501']
+      - targets: ['streamlit:8501']
     metrics_path: '/_stcore/health'
     scrape_interval: 30s
     scrape_timeout: 10s
@@ -45,7 +45,7 @@ scrape_configs:
   # Custom ML metrics endpoint
   - job_name: 'ml-monitoring'
     static_configs:
-      - targets: ['host.docker.internal:8000']
+      - targets: ['api:8000']
     metrics_path: '/ml-metrics'
     scrape_interval: 30s
     scrape_timeout: 10s

@@ -156,7 +156,11 @@ class LoguruLogger:
         )
 
     def log_monitoring_event(
-        self, event_type: str, service: str, status: str, details: dict[str, Any] | None = None
+        self,
+        event_type: str,
+        service: str,
+        status: str,
+        details: dict[str, Any] | None = None,
     ):
         """Logger un événement de monitoring"""
         logger.bind(monitoring=True).info(

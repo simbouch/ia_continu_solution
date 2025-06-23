@@ -26,14 +26,14 @@ def check_api_health() -> dict[str, any]:
             "status": "healthy" if response.status_code == 200 else "unhealthy",
             "response_time": health_data.get("response_time", 0),
             "timestamp": datetime.now().isoformat(),
-            "details": health_data
+            "details": health_data,
         }
     except Exception as e:
         logger.error(f"API health check failed: {e}")
         return {
             "status": "unhealthy",
             "error": str(e),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -48,7 +48,9 @@ def simulate_model_drift_check() -> dict[str, any]:
 
     has_drift = drift_score > drift_threshold
 
-    logger.info(f"Model drift check - Score: {drift_score:.3f}, Threshold: {drift_threshold}")
+    logger.info(
+        f"Model drift check - Score: {drift_score:.3f}, Threshold: {drift_threshold}"
+    )
 
     if has_drift:
         logger.warning(f"⚠️ Model drift detected! Score: {drift_score:.3f}")
@@ -60,7 +62,7 @@ def simulate_model_drift_check() -> dict[str, any]:
         "threshold": drift_threshold,
         "has_drift": has_drift,
         "timestamp": datetime.now().isoformat(),
-        "status": "drift_detected" if has_drift else "stable"
+        "status": "drift_detected" if has_drift else "stable",
     }
 
 
@@ -74,7 +76,7 @@ def check_data_quality() -> dict[str, any]:
         "completeness": random.uniform(0.85, 1.0),
         "accuracy": random.uniform(0.80, 0.98),
         "consistency": random.uniform(0.90, 1.0),
-        "timeliness": random.uniform(0.75, 1.0)
+        "timeliness": random.uniform(0.75, 1.0),
     }
 
     # Calculate overall quality score
@@ -91,7 +93,7 @@ def check_data_quality() -> dict[str, any]:
         "threshold": quality_threshold,
         "is_good": is_quality_good,
         "timestamp": datetime.now().isoformat(),
-        "status": "good" if is_quality_good else "poor"
+        "status": "good" if is_quality_good else "poor",
     }
 
 
@@ -105,7 +107,7 @@ def generate_ml_predictions() -> dict[str, any]:
         login_response = requests.post(
             "http://host.docker.internal:8000/auth/login",
             json={"username": "admin", "password": "admin123"},
-            timeout=10
+            timeout=10,
         )
 
         if login_response.status_code != 200:
@@ -122,16 +124,18 @@ def generate_ml_predictions() -> dict[str, any]:
                 "http://host.docker.internal:8000/predict",
                 json={"features": features},
                 headers=headers,
-                timeout=10
+                timeout=10,
             )
 
             if pred_response.status_code == 200:
                 pred_data = pred_response.json()
-                predictions.append({
-                    "features": features,
-                    "prediction": pred_data["prediction"],
-                    "confidence": pred_data.get("confidence", 0.5)
-                })
+                predictions.append(
+                    {
+                        "features": features,
+                        "prediction": pred_data["prediction"],
+                        "confidence": pred_data.get("confidence", 0.5),
+                    }
+                )
 
         logger.info(f"Generated {len(predictions)} predictions")
 
@@ -139,7 +143,7 @@ def generate_ml_predictions() -> dict[str, any]:
             "predictions_count": len(predictions),
             "predictions": predictions,
             "timestamp": datetime.now().isoformat(),
-            "status": "success"
+            "status": "success",
         }
 
     except Exception as e:
@@ -148,7 +152,7 @@ def generate_ml_predictions() -> dict[str, any]:
             "predictions_count": 0,
             "error": str(e),
             "timestamp": datetime.now().isoformat(),
-            "status": "failed"
+            "status": "failed",
         }
 
 
@@ -194,28 +198,34 @@ def ml_monitoring_workflow():
     alerts = []
 
     if api_health["status"] == "unhealthy":
-        alerts.append({
-            "type": "api_health",
-            "severity": "critical",
-            "message": "API service is unhealthy",
-            "details": api_health
-        })
+        alerts.append(
+            {
+                "type": "api_health",
+                "severity": "critical",
+                "message": "API service is unhealthy",
+                "details": api_health,
+            }
+        )
 
     if drift_result["has_drift"]:
-        alerts.append({
-            "type": "model_drift",
-            "severity": "warning",
-            "message": f"Model drift detected (score: {drift_result['drift_score']:.3f})",
-            "details": drift_result
-        })
+        alerts.append(
+            {
+                "type": "model_drift",
+                "severity": "warning",
+                "message": f"Model drift detected (score: {drift_result['drift_score']:.3f})",
+                "details": drift_result,
+            }
+        )
 
     if not quality_result["is_good"]:
-        alerts.append({
-            "type": "data_quality",
-            "severity": "warning",
-            "message": f"Data quality below threshold (score: {quality_result['overall_score']:.3f})",
-            "details": quality_result
-        })
+        alerts.append(
+            {
+                "type": "data_quality",
+                "severity": "warning",
+                "message": f"Data quality below threshold (score: {quality_result['overall_score']:.3f})",
+                "details": quality_result,
+            }
+        )
 
     # Send notifications for alerts
     if alerts:
@@ -234,7 +244,7 @@ def ml_monitoring_workflow():
         "predictions": prediction_result,
         "alerts_count": len(alerts),
         "alerts": alerts,
-        "status": "healthy" if not alerts else "alerts_present"
+        "status": "healthy" if not alerts else "alerts_present",
     }
 
     logger.info(f"📊 Monitoring workflow completed - Status: {summary['status']}")

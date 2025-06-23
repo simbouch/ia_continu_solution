@@ -35,7 +35,7 @@ async def deploy_flows():
         description="Automated ML monitoring and drift detection",
         schedule=IntervalSchedule(interval=timedelta(minutes=2)),  # Run every 2 minutes
         work_pool_name="default-agent-pool",
-        tags=["monitoring", "ml", "automated"]
+        tags=["monitoring", "ml", "automated"],
     )
 
     data_generation_deployment = Deployment.build_from_flow(
@@ -44,7 +44,7 @@ async def deploy_flows():
         description="Automated data generation and validation",
         schedule=IntervalSchedule(interval=timedelta(minutes=5)),  # Run every 5 minutes
         work_pool_name="default-agent-pool",
-        tags=["data", "generation", "automated"]
+        tags=["data", "generation", "automated"],
     )
 
     # Deploy the flows
@@ -80,7 +80,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Deploy and manage Prefect flows")
-    parser.add_argument("--deploy", action="store_true", help="Deploy flows to Prefect server")
+    parser.add_argument(
+        "--deploy", action="store_true", help="Deploy flows to Prefect server"
+    )
     parser.add_argument("--run", action="store_true", help="Run flows manually")
     parser.add_argument("--both", action="store_true", help="Deploy and run flows")
 

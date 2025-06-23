@@ -124,7 +124,6 @@ class TestPredictionEndpoints:
     ):
         """Test that prediction responds within acceptable time"""
 
-
         start_time = time.time()
         response = requests.post(
             f"{API_BASE_URL}/predict",
@@ -191,11 +190,13 @@ class TestPredictionEndpoints:
     def test_generate_endpoint_creates_correct_number_of_samples(self, auth_headers):
         """Test that data generation creates the requested number of samples"""
 
-
         time.sleep(1.0)  # Longer delay to prevent race conditions
         generation_id = random.randint(10000, 99999)  # Use random generation_id
 
-        test_data = {"samples": 150, "generation_id": generation_id}  # Valid range is 100-10000
+        test_data = {
+            "samples": 150,
+            "generation_id": generation_id,
+        }  # Valid range is 100-10000
 
         response = requests.post(
             f"{API_BASE_URL}/generate", json=test_data, headers=auth_headers, timeout=30

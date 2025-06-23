@@ -268,8 +268,6 @@ def prediction_interface():
         )
 
         if st.button("🎲 Générer prédictions aléatoires"):
-
-
             predictions_data = []
 
             progress_bar = st.progress(0)
@@ -411,8 +409,6 @@ def monitoring_dashboard():
         for i, (name, url) in enumerate(services.items()):
             with cols[i]:
                 try:
-
-
                     response = requests.get(url, timeout=3)
                     if response.status_code == 200:
                         st.success(f"{name}\n✅ Online")

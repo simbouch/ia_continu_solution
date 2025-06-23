@@ -17,7 +17,7 @@
         "type": "stat",
         "targets": [
           {
-            "expr": "up{job=\"api\"}",
+            "expr": "up{job=\"ia-continu-api\"}",
             "legendFormat": "API Status"
           }
         ],
@@ -46,7 +46,7 @@
         "type": "timeseries",
         "targets": [
           {
-            "expr": "http_request_duration_seconds{job=\"api\"}",
+            "expr": "api_request_duration_seconds{job=\"ia-continu-api\"}",
             "legendFormat": "Response Time"
           }
         ],
@@ -64,7 +64,7 @@
         "type": "stat",
         "targets": [
           {
-            "expr": "rate(http_requests_total{endpoint=\"/predict\"}[5m])",
+            "expr": "rate(api_requests_total{endpoint=\"/predict\"}[5m])",
             "legendFormat": "Predictions/sec"
           }
         ],

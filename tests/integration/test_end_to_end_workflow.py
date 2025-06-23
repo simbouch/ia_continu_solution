@@ -85,7 +85,6 @@ class TestEndToEndWorkflow:
     def test_data_persistence_across_requests(self, auth_headers):
         """Test that data persists across multiple requests"""
 
-
         time.sleep(1.0)  # Prevent database race conditions
 
         # Generate data
@@ -139,7 +138,6 @@ class TestEndToEndWorkflow:
 
     def test_concurrent_requests_handling(self, auth_headers):
         """Test system handling of concurrent requests"""
-
 
         def make_prediction(features):
             return requests.post(

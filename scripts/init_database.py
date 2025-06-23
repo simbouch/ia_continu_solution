@@ -23,9 +23,10 @@ def run_alembic_upgrade():
         print("🔄 Running Alembic migrations...")
         result = subprocess.run(
             ["alembic", "upgrade", "head"],
-            check=False, cwd=Path(__file__).parent.parent,
+            check=False,
+            cwd=Path(__file__).parent.parent,
             capture_output=True,
-            text=True
+            text=True,
         )
 
         if result.returncode == 0:
@@ -42,6 +43,7 @@ def run_alembic_upgrade():
 
     return True
 
+
 def initialize_auth_system():
     """Initialiser le système d'authentification"""
     try:
@@ -52,6 +54,7 @@ def initialize_auth_system():
     except Exception as e:
         print(f"❌ Error initializing auth system: {e}")
         return False
+
 
 def initialize_database_manager():
     """Initialiser le gestionnaire de base de données"""
@@ -64,6 +67,7 @@ def initialize_database_manager():
         print(f"❌ Error initializing database manager: {e}")
         return False
 
+
 def create_sample_data():
     """Créer des données d'exemple"""
     try:
@@ -73,8 +77,6 @@ def create_sample_data():
         db_manager = DatabaseManager()
 
         # Générer quelques échantillons
-
-
 
         generation_id = 1
         samples_count = 100
@@ -93,7 +95,7 @@ def create_sample_data():
             generation_id=generation_id,
             samples_count=samples_count,
             hour_generated=hour_generated,
-            features_targets=features_targets
+            features_targets=features_targets,
         )
 
         if success:
@@ -106,6 +108,7 @@ def create_sample_data():
         return False
 
     return True
+
 
 def main():
     """Fonction principale d'initialisation"""
@@ -148,11 +151,14 @@ def main():
     print("   - Sample dataset created")
     print()
     print("🔗 Next steps:")
-    print("   1. Start the API: python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000")
+    print(
+        "   1. Start the API: python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000"
+    )
     print("   2. Test authentication: POST /auth/login")
     print("   3. Access Streamlit UI: http://localhost:8501")
 
     return True
+
 
 if __name__ == "__main__":
     success = main()

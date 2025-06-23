@@ -20,7 +20,7 @@ def authenticate_api() -> str:
         response = requests.post(
             "http://host.docker.internal:8000/auth/login",
             json={"username": "admin", "password": "admin123"},
-            timeout=10
+            timeout=10,
         )
 
         if response.status_code == 200:
@@ -50,7 +50,7 @@ def generate_training_data(token: str, samples: int = 300) -> dict[str, any]:
             "http://host.docker.internal:8000/generate",
             json={"samples": samples, "generation_id": generation_id},
             headers=headers,
-            timeout=30
+            timeout=30,
         )
 
         if response.status_code == 200:
@@ -60,7 +60,7 @@ def generate_training_data(token: str, samples: int = 300) -> dict[str, any]:
                 "status": "success",
                 "samples_generated": result.get("samples_generated", 0),
                 "generation_id": generation_id,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
         else:
             raise Exception(f"Generation failed: {response.text}")
@@ -70,7 +70,7 @@ def generate_training_data(token: str, samples: int = 300) -> dict[str, any]:
         return {
             "status": "failed",
             "error": str(e),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -84,7 +84,7 @@ def validate_generated_data(generation_result: dict[str, any]) -> dict[str, any]
         return {
             "status": "failed",
             "reason": "generation_failed",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     samples_generated = generation_result.get("samples_generated", 0)
@@ -94,13 +94,18 @@ def validate_generated_data(generation_result: dict[str, any]) -> dict[str, any]
         "sample_count_valid": samples_generated > 0,
         "data_format_valid": True,  # Simulate format check
         "no_duplicates": random.choice([True, True, False]),  # Mostly pass
-        "feature_distribution_valid": random.choice([True, True, True, False]),  # Mostly pass
-        "target_balance_valid": random.uniform(0.4, 0.6) < 0.55  # Simulate balance check
+        "feature_distribution_valid": random.choice(
+            [True, True, True, False]
+        ),  # Mostly pass
+        "target_balance_valid": random.uniform(0.4, 0.6)
+        < 0.55,  # Simulate balance check
     }
 
     all_checks_passed = all(validation_checks.values())
 
-    logger.info(f"Data validation - Checks passed: {sum(validation_checks.values())}/{len(validation_checks)}")
+    logger.info(
+        f"Data validation - Checks passed: {sum(validation_checks.values())}/{len(validation_checks)}"
+    )
 
     if all_checks_passed:
         logger.info("✅ All data validation checks passed")
@@ -111,7 +116,7 @@ def validate_generated_data(generation_result: dict[str, any]) -> dict[str, any]
         "status": "passed" if all_checks_passed else "failed",
         "checks": validation_checks,
         "samples_validated": samples_generated,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
 
@@ -134,30 +139,34 @@ def run_model_predictions(token: str, num_predictions: int = 10) -> dict[str, an
                 "http://host.docker.internal:8000/predict",
                 json={"features": features},
                 headers=headers,
-                timeout=10
+                timeout=10,
             )
 
             if response.status_code == 200:
                 pred_data = response.json()
-                predictions.append({
-                    "features": features,
-                    "prediction": pred_data["prediction"],
-                    "confidence": pred_data.get("confidence", 0.5),
-                    "timestamp": datetime.now().isoformat()
-                })
+                predictions.append(
+                    {
+                        "features": features,
+                        "prediction": pred_data["prediction"],
+                        "confidence": pred_data.get("confidence", 0.5),
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                )
             else:
-                logger.warning(f"Prediction {i+1} failed: {response.status_code}")
+                logger.warning(f"Prediction {i + 1} failed: {response.status_code}")
 
         success_rate = len(predictions) / num_predictions
 
-        logger.info(f"✅ Completed {len(predictions)}/{num_predictions} predictions (success rate: {success_rate:.1%})")
+        logger.info(
+            f"✅ Completed {len(predictions)}/{num_predictions} predictions (success rate: {success_rate:.1%})"
+        )
 
         return {
             "status": "success",
             "predictions_made": len(predictions),
             "success_rate": success_rate,
             "predictions": predictions,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     except Exception as e:
@@ -165,7 +174,7 @@ def run_model_predictions(token: str, num_predictions: int = 10) -> dict[str, an
         return {
             "status": "failed",
             "error": str(e),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
 
@@ -179,7 +188,7 @@ def calculate_performance_metrics(prediction_result: dict[str, any]) -> dict[str
         return {
             "status": "failed",
             "reason": "predictions_failed",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     predictions = prediction_result.get("predictions", [])
@@ -189,7 +198,7 @@ def calculate_performance_metrics(prediction_result: dict[str, any]) -> dict[str
         return {
             "status": "failed",
             "reason": "no_predictions",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     # Calculate metrics
@@ -210,15 +219,17 @@ def calculate_performance_metrics(prediction_result: dict[str, any]) -> dict[str
         "min_confidence": min_confidence,
         "max_confidence": max_confidence,
         "class_distribution": class_counts,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
-    logger.info(f"📊 Performance metrics calculated - Avg confidence: {avg_confidence:.3f}")
+    logger.info(
+        f"📊 Performance metrics calculated - Avg confidence: {avg_confidence:.3f}"
+    )
 
     return {
         "status": "success",
         "metrics": metrics,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
 
@@ -252,15 +263,21 @@ def data_generation_workflow(samples: int = 250):
         "data_validation": validation_result,
         "model_predictions": prediction_result,
         "performance_metrics": metrics_result,
-        "overall_status": "success" if all([
-            generation_result.get("status") == "success",
-            validation_result.get("status") == "passed",
-            prediction_result.get("status") == "success",
-            metrics_result.get("status") == "success"
-        ]) else "partial_success"
+        "overall_status": "success"
+        if all(
+            [
+                generation_result.get("status") == "success",
+                validation_result.get("status") == "passed",
+                prediction_result.get("status") == "success",
+                metrics_result.get("status") == "success",
+            ]
+        )
+        else "partial_success",
     }
 
-    logger.info(f"📊 Data generation workflow completed - Status: {workflow_summary['overall_status']}")
+    logger.info(
+        f"📊 Data generation workflow completed - Status: {workflow_summary['overall_status']}"
+    )
 
     return workflow_summary
 

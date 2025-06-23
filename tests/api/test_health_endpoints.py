@@ -49,7 +49,6 @@ class TestHealthEndpoints:
     def test_api_health_check_response_time_under_threshold(self):
         """Test that health check responds within acceptable time"""
 
-
         start_time = time.time()
         response = requests.get(f"{API_BASE_URL}/health", timeout=10)
         response_time = time.time() - start_time
