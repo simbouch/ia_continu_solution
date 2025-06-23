@@ -156,8 +156,8 @@ class DatabaseManager:
             # Get samples for this generation
             cursor.execute(
                 """
-                SELECT feature1, feature2, target 
-                FROM dataset_samples 
+                SELECT feature1, feature2, target
+                FROM dataset_samples
                 WHERE generation_id = ?
             """,
                 (generation_id,),
@@ -214,7 +214,7 @@ class DatabaseManager:
 
             cursor.execute("""
                 SELECT version, accuracy, training_samples, created_at
-                FROM models 
+                FROM models
                 WHERE is_active = TRUE
                 ORDER BY created_at DESC
                 LIMIT 1
@@ -245,7 +245,7 @@ class DatabaseManager:
             cursor.execute(
                 """
                 SELECT generation_id, samples_count, created_at, hour_generated
-                FROM datasets 
+                FROM datasets
                 ORDER BY created_at DESC
                 LIMIT ?
             """,
@@ -279,7 +279,7 @@ class DatabaseManager:
             cursor.execute(
                 """
                 SELECT version, accuracy, training_samples, created_at, is_active
-                FROM models 
+                FROM models
                 ORDER BY created_at DESC
                 LIMIT ?
             """,

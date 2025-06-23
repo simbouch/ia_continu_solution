@@ -1,0 +1,65 @@
+groups:
+  - name: ml_monitoring_alerts
+    rules:
+      - alert: APIServiceDown
+        expr: up{job="ia-continu-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API service is down"
+          description: "The IA Continu API service has been down for more than 1 minute."
+
+      - alert: HighResponseTime
+        expr: http_request_duration_seconds{job="ia-continu-api"} > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API response time"
+          description: "API response time is above 2 seconds for more than 2 minutes."
+
+      - alert: MLflowServiceDown
+        expr: up{job="mlflow"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MLflow service is down"
+          description: "MLflow service has been down for more than 2 minutes."
+
+      - alert: PrefectServiceDown
+        expr: up{job="prefect-server"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prefect service is down"
+          description: "Prefect orchestration service has been down for more than 2 minutes."
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 10% for more than 3 minutes."
+
+      - alert: ModelDriftDetected
+        expr: model_drift_score > 0.8
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Model drift detected"
+          description: "Model drift score is above 0.8, indicating potential model degradation."
+
+      - alert: LowDataQuality
+        expr: data_quality_score < 0.7
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low data quality detected"
+          description: "Data quality score is below 0.7 for more than 5 minutes."

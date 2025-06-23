@@ -84,6 +84,7 @@ class TestEndToEndWorkflow:
     def test_data_persistence_across_requests(self, auth_headers):
         """Test that data persists across multiple requests"""
         import time
+
         time.sleep(1.0)  # Prevent database race conditions
 
         # Generate data
@@ -94,7 +95,7 @@ class TestEndToEndWorkflow:
             timeout=30,
         )
         assert generate_response.status_code == 200
-        generation_id = generate_response.json()["generation_id"]
+        generate_response.json()["generation_id"]
 
         # Make multiple predictions to ensure model is working
         predictions = []
@@ -223,7 +224,7 @@ class TestEndToEndWorkflow:
             f"{API_BASE_URL}/model/info", headers=auth_headers, timeout=10
         )
         assert initial_model_response.status_code == 200
-        initial_model = initial_model_response.json()
+        initial_model_response.json()
 
         # Make initial prediction
         initial_prediction_response = requests.post(

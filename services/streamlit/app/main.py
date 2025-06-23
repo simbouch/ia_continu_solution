@@ -26,7 +26,7 @@ API_BASE_URL = os.getenv("API_URL", "http://host.docker.internal:8000")
 class APIClient:
     """Client pour interagir avec l'API"""
 
-    def __init__(self, base_url: str, token: str = None):
+    def __init__(self, base_url: str, token: str | None = None):
         self.base_url = base_url
         self.token = token
         self.headers = {}

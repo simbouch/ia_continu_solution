@@ -293,14 +293,14 @@ def monitor_system_health():
     try:
         api_response = requests.get(f"{API_URL}/health", timeout=5)
         health_status["api"] = api_response.status_code == 200
-    except:
+    except Exception:
         health_status["api"] = False
 
     # Check MLflow health
     try:
         mlflow_response = requests.get(f"{MLFLOW_URL}/", timeout=5)
         health_status["mlflow"] = mlflow_response.status_code == 200
-    except:
+    except Exception:
         health_status["mlflow"] = False
 
     # Send alert if any service is down

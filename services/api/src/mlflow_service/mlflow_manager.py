@@ -67,7 +67,7 @@ class MLflowManager:
 
             # Wait for server to start
             max_retries = 30
-            for i in range(max_retries):
+            for _i in range(max_retries):
                 if self.is_mlflow_running():
                     logger.info("MLflow server started successfully")
                     return True
@@ -97,7 +97,7 @@ class MLflowManager:
         try:
             response = requests.get(f"{self.tracking_uri}/health", timeout=5)
             return response.status_code == 200
-        except:
+        except Exception:
             return False
 
     def setup_experiment(self):
@@ -107,11 +107,9 @@ class MLflowManager:
 
             # Create or get experiment
             try:
-                experiment_id = mlflow.create_experiment(self.experiment_name)
+                mlflow.create_experiment(self.experiment_name)
                 logger.info(f"Created new experiment: {self.experiment_name}")
             except mlflow.exceptions.MlflowException:
-                experiment = mlflow.get_experiment_by_name(self.experiment_name)
-                experiment_id = experiment.experiment_id
                 logger.info(f"Using existing experiment: {self.experiment_name}")
 
             mlflow.set_experiment(self.experiment_name)

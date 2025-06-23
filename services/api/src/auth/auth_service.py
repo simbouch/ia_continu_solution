@@ -274,7 +274,7 @@ class AuthService:
             # Mettre à jour les statistiques de login
             cursor.execute(
                 """
-                UPDATE users 
+                UPDATE users
                 SET last_login = CURRENT_TIMESTAMP, login_count = login_count + 1
                 WHERE id = ?
             """,
@@ -366,7 +366,7 @@ class AuthService:
 
         cursor.execute(
             """
-            SELECT is_revoked FROM tokens 
+            SELECT is_revoked FROM tokens
             WHERE token_hash = ? AND expires_at > CURRENT_TIMESTAMP
         """,
             (token_hash,),

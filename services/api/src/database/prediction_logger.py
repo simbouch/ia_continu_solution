@@ -104,7 +104,7 @@ class PredictionLogger:
         feature2: float,
         prediction: int,
         confidence: float,
-        response_time_ms: float = None,
+        response_time_ms: float | None = None,
     ):
         """Enregistrer une prédiction"""
         conn = sqlite3.connect(self.db_path)
@@ -112,7 +112,7 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            INSERT INTO prediction_logs 
+            INSERT INTO prediction_logs
             (user_id, model_version, feature1, feature2, prediction, confidence, response_time_ms)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
@@ -138,7 +138,7 @@ class PredictionLogger:
         accuracy_before: float,
         accuracy_after: float,
         training_duration: float,
-        mlflow_run_id: str = None,
+        mlflow_run_id: str | None = None,
     ):
         """Enregistrer un entraînement"""
         conn = sqlite3.connect(self.db_path)
@@ -146,8 +146,8 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            INSERT INTO model_training_logs 
-            (model_version, trigger_reason, training_samples, accuracy_before, 
+            INSERT INTO model_training_logs
+            (model_version, trigger_reason, training_samples, accuracy_before,
              accuracy_after, training_duration_seconds, mlflow_run_id)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
@@ -171,8 +171,8 @@ class PredictionLogger:
         component: str,
         event_type: str,
         message: str,
-        details: dict[str, Any] = None,
-        user_id: int = None,
+        details: dict[str, Any] | None = None,
+        user_id: int | None = None,
     ):
         """Enregistrer un événement système"""
         conn = sqlite3.connect(self.db_path)
@@ -182,7 +182,7 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            INSERT INTO system_logs 
+            INSERT INTO system_logs
             (level, component, event_type, message, details, user_id)
             VALUES (?, ?, ?, ?, ?, ?)
         """,
@@ -197,7 +197,7 @@ class PredictionLogger:
         metric_name: str,
         metric_value: float,
         metric_type: str,
-        labels: dict[str, str] = None,
+        labels: dict[str, str] | None = None,
     ):
         """Enregistrer une métrique de monitoring"""
         conn = sqlite3.connect(self.db_path)
@@ -207,7 +207,7 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            INSERT INTO monitoring_metrics 
+            INSERT INTO monitoring_metrics
             (metric_name, metric_value, metric_type, labels)
             VALUES (?, ?, ?, ?)
         """,
@@ -224,7 +224,7 @@ class PredictionLogger:
         trigger_value: float,
         threshold: float,
         action_taken: str,
-        details: dict[str, Any] = None,
+        details: dict[str, Any] | None = None,
     ):
         """Enregistrer une détection de dérive"""
         conn = sqlite3.connect(self.db_path)
@@ -234,7 +234,7 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            INSERT INTO drift_detections 
+            INSERT INTO drift_detections
             (model_version, detection_method, trigger_value, threshold, action_taken, details)
             VALUES (?, ?, ?, ?, ?, ?)
         """,
@@ -252,7 +252,7 @@ class PredictionLogger:
         conn.close()
 
     def get_prediction_history(
-        self, limit: int = 100, user_id: int = None
+        self, limit: int = 100, user_id: int | None = None
     ) -> list[dict]:
         """Récupérer l'historique des prédictions"""
         conn = sqlite3.connect(self.db_path)
@@ -261,11 +261,11 @@ class PredictionLogger:
         if user_id:
             cursor.execute(
                 """
-                SELECT id, user_id, model_version, feature1, feature2, 
+                SELECT id, user_id, model_version, feature1, feature2,
                        prediction, confidence, response_time_ms, created_at
-                FROM prediction_logs 
+                FROM prediction_logs
                 WHERE user_id = ?
-                ORDER BY created_at DESC 
+                ORDER BY created_at DESC
                 LIMIT ?
             """,
                 (user_id, limit),
@@ -273,10 +273,10 @@ class PredictionLogger:
         else:
             cursor.execute(
                 """
-                SELECT id, user_id, model_version, feature1, feature2, 
+                SELECT id, user_id, model_version, feature1, feature2,
                        prediction, confidence, response_time_ms, created_at
-                FROM prediction_logs 
-                ORDER BY created_at DESC 
+                FROM prediction_logs
+                ORDER BY created_at DESC
                 LIMIT ?
             """,
                 (limit,),
@@ -307,11 +307,11 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            SELECT id, model_version, trigger_reason, training_samples, 
-                   accuracy_before, accuracy_after, training_duration_seconds, 
+            SELECT id, model_version, trigger_reason, training_samples,
+                   accuracy_before, accuracy_after, training_duration_seconds,
                    mlflow_run_id, created_at
-            FROM model_training_logs 
-            ORDER BY created_at DESC 
+            FROM model_training_logs
+            ORDER BY created_at DESC
             LIMIT ?
         """,
             (limit,),
@@ -342,10 +342,10 @@ class PredictionLogger:
 
         cursor.execute(
             """
-            SELECT id, model_version, detection_method, trigger_value, 
+            SELECT id, model_version, detection_method, trigger_value,
                    threshold, action_taken, details, created_at
-            FROM drift_detections 
-            ORDER BY created_at DESC 
+            FROM drift_detections
+            ORDER BY created_at DESC
             LIMIT ?
         """,
             (limit,),
@@ -369,7 +369,7 @@ class PredictionLogger:
         ]
 
     def get_system_logs(
-        self, limit: int = 100, level: str = None, component: str = None
+        self, limit: int = 100, level: str | None = None, component: str | None = None
     ) -> list[dict]:
         """Récupérer les logs système"""
         conn = sqlite3.connect(self.db_path)
@@ -377,7 +377,7 @@ class PredictionLogger:
 
         query = """
             SELECT id, level, component, event_type, message, details, user_id, created_at
-            FROM system_logs 
+            FROM system_logs
         """
         params = []
 
@@ -424,9 +424,9 @@ class PredictionLogger:
 
         # Prédictions par modèle
         cursor.execute("""
-            SELECT model_version, COUNT(*) 
-            FROM prediction_logs 
-            GROUP BY model_version 
+            SELECT model_version, COUNT(*)
+            FROM prediction_logs
+            GROUP BY model_version
             ORDER BY COUNT(*) DESC
         """)
         predictions_by_model = dict(cursor.fetchall())

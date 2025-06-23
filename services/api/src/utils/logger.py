@@ -78,7 +78,7 @@ class LoguruLogger:
         endpoint: str,
         status_code: int,
         duration: float,
-        user_id: str = None,
+        user_id: str | None = None,
     ):
         """Logger une requête API"""
         logger.bind(api=True).info(
@@ -94,7 +94,7 @@ class LoguruLogger:
         )
 
     def log_ml_operation(
-        self, operation: str, model_version: str, metrics: dict[str, Any] = None
+        self, operation: str, model_version: str, metrics: dict[str, Any] | None = None
     ):
         """Logger une opération ML"""
         logger.bind(ml=True).info(
@@ -156,7 +156,7 @@ class LoguruLogger:
         )
 
     def log_monitoring_event(
-        self, event_type: str, service: str, status: str, details: dict[str, Any] = None
+        self, event_type: str, service: str, status: str, details: dict[str, Any] | None = None
     ):
         """Logger un événement de monitoring"""
         logger.bind(monitoring=True).info(
@@ -171,7 +171,7 @@ class LoguruLogger:
         )
 
     def log_database_operation(
-        self, operation: str, table: str, affected_rows: int = None
+        self, operation: str, table: str, affected_rows: int | None = None
     ):
         """Logger une opération base de données"""
         logger.bind(db=True).debug(
@@ -185,7 +185,7 @@ class LoguruLogger:
             },
         )
 
-    def log_system_event(self, event: str, details: dict[str, Any] = None):
+    def log_system_event(self, event: str, details: dict[str, Any] | None = None):
         """Logger un événement système"""
         logger.info(
             f"System: {event}",

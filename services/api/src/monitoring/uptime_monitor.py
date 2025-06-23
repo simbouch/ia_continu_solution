@@ -62,7 +62,7 @@ class UptimeMonitor:
             }
 
     def check_endpoint_health(
-        self, endpoint: str, method: str = "GET", data: dict = None
+        self, endpoint: str, method: str = "GET", data: dict | None = None
     ) -> dict:
         """Check specific endpoint health"""
         try:
@@ -159,7 +159,7 @@ class UptimeMonitor:
 
         return results
 
-    def monitor_continuously(self, interval: int = 30, duration: int = None):
+    def monitor_continuously(self, interval: int = 30, duration: int | None = None):
         """Run continuous monitoring"""
         logger.info(f"Starting continuous monitoring (interval: {interval}s)")
 

@@ -55,7 +55,7 @@ class TestPredictionEndpoints:
         # Validate prediction data
         assert isinstance(data["prediction"], int)
         assert data["prediction"] in [0, 1]  # Binary classification
-        assert isinstance(data["confidence"], (int, float))
+        assert isinstance(data["confidence"], int | float)
         assert 0.0 <= data["confidence"] <= 1.0
         assert isinstance(data["model_version"], str)
         assert data["model_version"].startswith("v")
@@ -187,10 +187,13 @@ class TestPredictionEndpoints:
 
     def test_generate_endpoint_creates_correct_number_of_samples(self, auth_headers):
         """Test that data generation creates the requested number of samples"""
+        import random
         import time
-        time.sleep(0.5)  # Small delay to prevent race conditions
 
-        test_data = {"samples": 150}  # Valid range is 100-10000
+        time.sleep(1.0)  # Longer delay to prevent race conditions
+        generation_id = random.randint(10000, 99999)  # Use random generation_id
+
+        test_data = {"samples": 150, "generation_id": generation_id}  # Valid range is 100-10000
 
         response = requests.post(
             f"{API_BASE_URL}/generate", json=test_data, headers=auth_headers, timeout=30
