@@ -4,12 +4,12 @@ Simple Flow Dashboard - Alternative to Prefect UI
 Shows automation flows and their status
 """
 
-from flask import Flask, render_template_string, jsonify
-import json
-import os
-from datetime import datetime, timedelta
+from datetime import datetime
+import random
 import threading
 import time
+
+from flask import Flask, jsonify, render_template_string
 
 app = Flask(__name__)
 
@@ -20,28 +20,29 @@ flow_stats = {
     "successful_runs": 0,
     "failed_runs": 0,
     "last_run": None,
-    "uptime_start": datetime.now()
+    "uptime_start": datetime.now(),
 }
+
 
 def add_flow_run(flow_name, status, duration=None, details=None):
     """Add a flow run to the history"""
-    global flow_runs, flow_stats
-    
+    global flow_runs
+
     run_data = {
         "id": len(flow_runs) + 1,
         "flow_name": flow_name,
         "status": status,
         "start_time": datetime.now(),
         "duration": duration or f"{random.randint(1, 5)}.{random.randint(10, 99)}s",
-        "details": details or {}
+        "details": details or {},
     }
-    
+
     flow_runs.append(run_data)
-    
+
     # Keep only last 50 runs
     if len(flow_runs) > 50:
         flow_runs = flow_runs[-50:]
-    
+
     # Update stats
     flow_stats["total_runs"] += 1
     if status == "completed":
@@ -50,42 +51,43 @@ def add_flow_run(flow_name, status, duration=None, details=None):
         flow_stats["failed_runs"] += 1
     flow_stats["last_run"] = datetime.now()
 
+
 def simulate_flow_runs():
     """Simulate flow runs for demonstration"""
-    import random
-    
     flows = [
         "ml-monitoring-workflow",
-        "data-generation-workflow", 
+        "data-generation-workflow",
         "health-check-workflow",
-        "metrics-collection-workflow"
+        "metrics-collection-workflow",
     ]
-    
+
     while True:
         try:
             flow_name = random.choice(flows)
             status = "completed" if random.random() > 0.1 else "failed"
             duration = f"{random.randint(1, 8)}.{random.randint(10, 99)}s"
-            
+
             details = {
                 "predictions_generated": random.randint(5, 20),
                 "drift_score": round(random.uniform(0.1, 0.8), 3),
-                "api_response_time": f"{random.randint(50, 200)}ms"
+                "api_response_time": f"{random.randint(50, 200)}ms",
             }
-            
+
             add_flow_run(flow_name, status, duration, details)
-            
+
             # Wait between 30-120 seconds
             time.sleep(random.randint(30, 120))
-            
+
         except Exception as e:
             print(f"Error in flow simulation: {e}")
             time.sleep(60)
 
+
 # Start flow simulation in background
 threading.Thread(target=simulate_flow_runs, daemon=True).start()
 
-@app.route('/')
+
+@app.route("/")
 def dashboard():
     """Main dashboard page"""
     template = """
@@ -124,7 +126,7 @@ def dashboard():
             <p>Enterprise Template - Automated ML Workflows</p>
             <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
         </div>
-        
+
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value">{{ stats.total_runs }}</div>
@@ -143,7 +145,7 @@ def dashboard():
                 <div class="stat-label">Uptime</div>
             </div>
         </div>
-        
+
         <div class="flows">
             <div class="flow-header">
                 <h2>📊 Recent Flow Runs</h2>
@@ -161,7 +163,7 @@ def dashboard():
             </div>
             {% endfor %}
         </div>
-        
+
         <div style="margin-top: 20px; text-align: center; color: #7f8c8d;">
             <p>🚀 Alternative to Prefect - Simple Flow Monitoring</p>
             <p>Auto-refreshes every 30 seconds</p>
@@ -169,37 +171,42 @@ def dashboard():
     </body>
     </html>
     """
-    
+
     uptime = datetime.now() - flow_stats["uptime_start"]
-    uptime_str = f"{uptime.days}d {uptime.seconds//3600}h {(uptime.seconds//60)%60}m"
-    
-    return render_template_string(
-        template, 
-        runs=list(reversed(flow_runs[-20:])),  # Show last 20 runs
-        stats=flow_stats,
-        uptime=uptime_str
+    uptime_str = (
+        f"{uptime.days}d {uptime.seconds // 3600}h {(uptime.seconds // 60) % 60}m"
     )
 
-@app.route('/api/stats')
+    return render_template_string(
+        template,
+        runs=list(reversed(flow_runs[-20:])),  # Show last 20 runs
+        stats=flow_stats,
+        uptime=uptime_str,
+    )
+
+
+@app.route("/api/stats")
 def api_stats():
     """API endpoint for flow statistics"""
     return jsonify(flow_stats)
 
-@app.route('/api/runs')
+
+@app.route("/api/runs")
 def api_runs():
     """API endpoint for flow runs"""
     return jsonify(flow_runs[-20:])
 
-if __name__ == '__main__':
-    import random
-    
+
+if __name__ == "__main__":
     # Add some initial flow runs
-    for i in range(10):
-        flow_name = random.choice(["ml-monitoring-workflow", "data-generation-workflow"])
+    for _ in range(10):
+        flow_name = random.choice(
+            ["ml-monitoring-workflow", "data-generation-workflow"]
+        )
         status = "completed" if random.random() > 0.2 else "failed"
         add_flow_run(flow_name, status)
-    
+
     print("🚀 Starting Flow Dashboard on port 4200")
     print("📊 Dashboard available at: http://localhost:4200")
-    
-    app.run(host='0.0.0.0', port=4200, debug=False)
+
+    app.run(host="0.0.0.0", port=4200, debug=False)
