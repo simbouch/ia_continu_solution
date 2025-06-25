@@ -5,6 +5,12 @@
 [![Template Ready](https://img.shields.io/badge/Template-Production%20Ready-orange.svg)](https://github.com/simbouch/ia_continu_solution)
 [![Enterprise Grade](https://img.shields.io/badge/Quality-Enterprise-purple.svg)](https://github.com/simbouch/ia_continu_solution)
 
+## 👨‍💻 Author
+
+**KHRIBECH Bouchaib**
+🌐 Website: [https://khribech-b.vercel.app/](https://khribech-b.vercel.app/)
+📧 Contact: [simplonbouchaib@gmail.com](mailto:simplonbouchaib@gmail.com)
+
 ## 🎯 Overview
 
 **IA Continu Solution** is a production-ready ML template with complete automation, advanced monitoring, and Discord integration. Built with modern microservices architecture and designed for immediate deployment and reuse across multiple projects.
@@ -258,6 +264,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **🏗️ Quality**: ✅ **ENTERPRISE GRADE**  
 **📚 Documentation**: ✅ **COMPREHENSIVE**  
 **🚀 Support**: ✅ **COMMUNITY DRIVEN**
+
+---
+
+## 🙏 Acknowledgments
+
+This project was developed as part of the **Simplon Formation** program, demonstrating enterprise-grade ML architecture and DevOps practices.
+
+**Author**: KHRIBECH Bouchaib
+**Portfolio**: [https://khribech-b.vercel.app/](https://khribech-b.vercel.app/)
+**Formation**: Simplon - Intelligence Artificielle Continue
 
 ---
 
